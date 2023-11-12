@@ -22,6 +22,7 @@ class CategoriesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
        binding = FragmentCategoriesBinding.inflate(layoutInflater)
         binding.apply {
+            Log.e("","")
             iService = ApiRetrofit.retrofit.create(IService::class.java)
             categoryList()
 
@@ -37,10 +38,12 @@ class CategoriesFragment : Fragment() {
         binding.apply {
             pbCat.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvCategories.visibility = View.GONE
             iService.categoriesList().enqueue(object : Callback<Categories>{
                 override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                     pbCat.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvCategories.visibility = View.VISIBLE
                     Log.e("","")
                     rvCategories.adapter = CategoriesAdapter(requireContext(),response.body()?.categories!!)
                     rvCategories.layoutManager = GridLayoutManager(requireContext(),2)
@@ -49,6 +52,7 @@ class CategoriesFragment : Fragment() {
                 override fun onFailure(call: Call<Categories>, t: Throwable) {
                     pbCat.visibility = View.VISIBLE
                     srl.visibility = View.GONE
+                    rvCategories.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
                     Log.e("","")
                     btnTry.setOnClickListener {
@@ -65,11 +69,13 @@ class CategoriesFragment : Fragment() {
             clNoConnection.visibility = View.GONE
             pbCat.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvCategories.visibility = View.GONE
             iService.categoriesList().enqueue(object : Callback<Categories>{
                 override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                     pbCat.visibility = View.GONE
                     clNoConnection.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvCategories.visibility = View.VISIBLE
                     Log.e("","")
                     rvCategories.adapter = CategoriesAdapter(requireContext(),response.body()?.categories!!)
                     rvCategories.layoutManager = GridLayoutManager(requireContext(),2)
@@ -79,6 +85,7 @@ class CategoriesFragment : Fragment() {
                     pbCat.visibility = View.VISIBLE
                     srl.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
+                    rvCategories.visibility = View.GONE
                     Log.e("","")
                 }
 
@@ -90,10 +97,12 @@ class CategoriesFragment : Fragment() {
         binding.apply {
             pbCat.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvCategories.visibility = View.GONE
             iService.categoriesList().enqueue(object : Callback<Categories>{
                 override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
                     pbCat.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvCategories.visibility = View.VISIBLE
                     Log.e("","")
                     rvCategories.adapter = CategoriesAdapter(requireContext(),response.body()?.categories!!)
                     rvCategories.layoutManager = GridLayoutManager(requireContext(),2)
@@ -103,6 +112,7 @@ class CategoriesFragment : Fragment() {
                     pbCat.visibility = View.VISIBLE
                     srl.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
+                    rvCategories.visibility = View.GONE
                     Log.e("","")
                 }
 

@@ -22,6 +22,7 @@ class WallpapersFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWallpapersBinding.inflate(layoutInflater)
         binding.apply {
+            Log.e("","")
             iService = ApiRetrofit.retrofit.create(IService::class.java)
             allWallpapers()
 
@@ -37,18 +38,21 @@ class WallpapersFragment : Fragment() {
         binding.apply {
             pbWall.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvWallpapers.visibility = View.GONE
             iService.allWallpapers().enqueue(object : Callback<AllWallpapers>{
                 override fun onResponse(call: Call<AllWallpapers>, response: Response<AllWallpapers>) {
                     pbWall.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvWallpapers.visibility = View.VISIBLE
                     Log.e("","")
-                   rvWallpapers.adapter = WallpapersAdapter(requireContext(),response.body()?.allWallpapers!!)
+                    rvWallpapers.adapter = WallpapersAdapter(requireContext(),response.body()?.allWallpapers!!)
                     rvWallpapers.layoutManager = GridLayoutManager(requireContext(),2)
                 }
 
                 override fun onFailure(call: Call<AllWallpapers>, t: Throwable) {
                     pbWall.visibility = View.VISIBLE
                     srl.visibility = View.GONE
+                    rvWallpapers.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
                     Log.e("","")
                     btnTry.setOnClickListener {
@@ -65,11 +69,13 @@ class WallpapersFragment : Fragment() {
             clNoConnection.visibility = View.GONE
             pbWall.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvWallpapers.visibility = View.GONE
             iService.allWallpapers().enqueue(object : Callback<AllWallpapers>{
                 override fun onResponse(call: Call<AllWallpapers>, response: Response<AllWallpapers>) {
                     pbWall.visibility = View.GONE
                     clNoConnection.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvWallpapers.visibility = View.VISIBLE
                     Log.e("","")
                     rvWallpapers.adapter = WallpapersAdapter(requireContext(),response.body()?.allWallpapers!!)
                     rvWallpapers.layoutManager = GridLayoutManager(requireContext(),2)
@@ -79,6 +85,7 @@ class WallpapersFragment : Fragment() {
                     pbWall.visibility = View.VISIBLE
                     srl.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
+                    rvWallpapers.visibility = View.GONE
                     Log.e("","")
                 }
 
@@ -90,10 +97,12 @@ class WallpapersFragment : Fragment() {
         binding.apply {
             pbWall.visibility = View.VISIBLE
             srl.visibility = View.GONE
+            rvWallpapers.visibility = View.GONE
             iService.allWallpapers().enqueue(object : Callback<AllWallpapers>{
                 override fun onResponse(call: Call<AllWallpapers>, response: Response<AllWallpapers>) {
                     pbWall.visibility = View.GONE
                     srl.visibility = View.VISIBLE
+                    rvWallpapers.visibility = View.VISIBLE
                     Log.e("","")
                     rvWallpapers.adapter = WallpapersAdapter(requireContext(),response.body()?.allWallpapers!!)
                     rvWallpapers.layoutManager = GridLayoutManager(requireContext(),2)
@@ -102,6 +111,7 @@ class WallpapersFragment : Fragment() {
                 override fun onFailure(call: Call<AllWallpapers>, t: Throwable) {
                     pbWall.visibility = View.VISIBLE
                     srl.visibility = View.GONE
+                    rvWallpapers.visibility = View.GONE
                     clNoConnection.visibility = View.VISIBLE
                     Log.e("","")
                 }

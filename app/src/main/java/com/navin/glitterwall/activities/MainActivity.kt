@@ -1,7 +1,6 @@
 package com.navin.glitterwall.activities
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,11 +24,15 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             setSupportActionBar(mainToolbar)
             Font.mainActivity(applicationContext,binding)
-            fragmentsList = mutableListOf()
+            fragmentsList = ArrayList()
             fragmentsList.add(HomeFragment())
             fragmentsList.add(WallpapersFragment())
             fragmentsList.add(CategoriesFragment())
-            mainVp.adapter = FragmentTabAdapter(this@MainActivity, fragmentsList)
+            mainVp.adapter = FragmentTabAdapter(this@MainActivity, fragmentsList).apply {
+                mainVp.post { mainVp.setCurrentItem(0,false) }
+            }
+            /** نگه داری فرگمنت ها در حافظه*/
+            mainVp.offscreenPageLimit = fragmentsList.size
             mainBnv.setOnItemSelectedListener {
                 when (it.itemId) {
 
