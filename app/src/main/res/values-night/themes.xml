@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    Base application theme
+    <style name="Base.Theme.Glitterwall" parent="Theme.Material3.DayNight.NoActionBar">
+         Customize your dark theme here.
+         <item name="colorPrimary">@color/Mauvelous</item>
+    </style>
+
+    <style name="Theme.GlitterWall" parent="Base.Theme.GlitterWall" />
+
+</resources>

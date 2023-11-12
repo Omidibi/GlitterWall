@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">GlitterWall</string>
+    <string name="Home">Home</string>
+    <string name="Wallpapers">Wallpapers</string>
+    <string name="Categories">Categories</string>
+    <string name="latest">Latest</string>
+    <string name="more">More</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="download_wallpaper">Download Wallpaper</string>
+    <string name="album">Album</string>
+    <string name="featured">Featured</string>
+    <string name="no_internet_connection">NO INTERNET CONNECTION</string>
+    <string name="try_again">TRY AGAIN</string>
+
+</resources>
