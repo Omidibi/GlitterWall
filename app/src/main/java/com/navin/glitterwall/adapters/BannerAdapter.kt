@@ -28,7 +28,7 @@ class BannerAdapter(private var context: Context, private var bannerList: List<B
         val imgNews = view.findViewById<AppCompatImageView>(R.id.img_banner)
         container.addView(view, 0)
         val bannerImage = bannerList[position]
-        Glide.with(context).load(bannerImage.bannerImageThumb).into(imgNews)
+        Glide.with(context).load(bannerImage.bannerImage).into(imgNews)
         return view
     }
 }
