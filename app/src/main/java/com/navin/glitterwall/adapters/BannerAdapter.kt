@@ -25,10 +25,14 @@ class BannerAdapter(private var context: Context, private var bannerList: List<B
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(context).inflate(R.layout.banner_row, null)
-        val imgNews = view.findViewById<AppCompatImageView>(R.id.img_banner)
+        val img = view.findViewById<AppCompatImageView>(R.id.img_banner)
         container.addView(view, 0)
         val bannerImage = bannerList[position]
-        Glide.with(context).load(bannerImage.bannerImage).into(imgNews)
+        Glide.with(context)
+            .load(bannerImage.bannerImage)
+            .placeholder(R.drawable.coming)
+            .error(R.drawable.error2)
+            .into(img)
         return view
     }
 }

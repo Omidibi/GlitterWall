@@ -4,12 +4,15 @@
         android:id="@+id/home"
         android:icon="@drawable/home"
         android:title="@string/Home" />
-    <item
-        android:id="@+id/wallpapers"
-        android:icon="@drawable/wallpapers"
-        android:title="@string/Wallpapers" />
+
     <item
         android:id="@+id/categories"
         android:icon="@drawable/documents"
         android:title="@string/Categories" />
+
+    <item
+        android:id="@+id/fvtWall"
+        android:icon="@drawable/favorite"
+        android:title="@string/favorites" />
+
 </menu>

@@ -33,6 +33,17 @@
 
                     />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/fvt"
+                    android:layout_width="@dimen/_45dp"
+                    android:layout_height="@dimen/_45dp"
+                    android:background="@drawable/bac_heart"
+                    android:layout_margin="@dimen/_8dp"
+                    android:padding="@dimen/_8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

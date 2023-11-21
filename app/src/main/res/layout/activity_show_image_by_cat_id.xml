@@ -31,6 +31,7 @@
             android:id="@+id/rv_cat_by_id"
             android:layout_width="@dimen/_0dp"
             android:layout_height="@dimen/_0dp"
+            android:background="@color/Solitude"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

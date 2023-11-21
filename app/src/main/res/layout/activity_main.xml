@@ -50,6 +50,7 @@
         android:id="@+id/main_bnv"
         android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
+        android:background="@color/PigPink"
         app:itemActiveIndicatorStyle="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

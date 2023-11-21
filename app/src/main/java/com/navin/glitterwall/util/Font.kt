@@ -15,8 +15,6 @@ class Font {
                 txtShow.typeface = typeface
                 txtLatest.typeface = typeface
                 txtFeatured.typeface = typeface
-                moreLatest.typeface = typeface
-                moreFeatured.typeface = typeface
             }
         }
 

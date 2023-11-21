@@ -1,5 +1,6 @@
 package com.navin.glitterwall.activities
 
+import android.content.pm.ActivityInfo
 import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +11,8 @@ import com.navin.glitterwall.R
 import com.navin.glitterwall.adapters.FragmentTabAdapter
 import com.navin.glitterwall.databinding.ActivityMainBinding
 import com.navin.glitterwall.fragments.CategoriesFragment
+import com.navin.glitterwall.fragments.FavoriteWallpaperFragment
 import com.navin.glitterwall.fragments.HomeFragment
-import com.navin.glitterwall.fragments.WallpapersFragment
 import com.navin.glitterwall.util.Font
 
 class MainActivity : AppCompatActivity() {
@@ -20,14 +21,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         setContentView(binding.root)
         binding.apply {
             setSupportActionBar(mainToolbar)
             Font.mainActivity(applicationContext,binding)
             fragmentsList = ArrayList()
             fragmentsList.add(HomeFragment())
-            fragmentsList.add(WallpapersFragment())
             fragmentsList.add(CategoriesFragment())
+            fragmentsList.add(FavoriteWallpaperFragment())
             mainVp.adapter = FragmentTabAdapter(this@MainActivity, fragmentsList).apply {
                 mainVp.post { mainVp.setCurrentItem(0,false) }
             }
@@ -38,9 +40,9 @@ class MainActivity : AppCompatActivity() {
 
                     R.id.home -> mainVp.currentItem = 0
 
-                    R.id.wallpapers -> mainVp.currentItem = 1
+                    R.id.categories ->  mainVp.currentItem = 1
 
-                    R.id.categories ->  mainVp.currentItem = 2
+                    R.id.fvtWall -> mainVp.currentItem = 2
 
                 }
                 true
@@ -52,17 +54,17 @@ class MainActivity : AppCompatActivity() {
                     when (position) {
                         0 -> {
                             mainBnv.menu.findItem(R.id.home).isChecked = true
-                            titleToolbar.text = getString(R.string.Home)
+                            titleToolbar.text = getString(R.string.app_name)
                         }
 
                         1 -> {
-                            mainBnv.menu.findItem(R.id.wallpapers).isChecked = true
-                            titleToolbar.text = getString(R.string.Wallpapers)
+                            mainBnv.menu.findItem(R.id.categories).isChecked = true
+                            titleToolbar.text = getString(R.string.Categories)
                         }
 
                         2 -> {
-                            mainBnv.menu.findItem(R.id.categories).isChecked = true
-                            titleToolbar.text = getString(R.string.Categories)
+                            mainBnv.menu.findItem(R.id.fvtWall).isChecked = true
+                            titleToolbar.text = getString(R.string.favorites)
                         }
                     }
                 }

@@ -11,7 +11,7 @@ data class Home(
     @SerializedName("category")
     val categoryWallpaper: List<Category>,
     @SerializedName("featured_video")
-    val featuredWallpaper: List<FeaturedVideo>,
+    val featuredWallpaper: List<AllVideo>,
     @SerializedName("latest_video")
-    val latestWallpaper: List<LatestVideo>
+    val latestWallpaper: List<AllVideo>
 ) : Parcelable

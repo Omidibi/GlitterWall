@@ -41,12 +41,13 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_10dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_banner"
                     android:layout_width="@dimen/_0dp"
-                    android:layout_height="@dimen/_230dp"
+                    android:layout_height="@dimen/_250dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -95,7 +96,7 @@
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_40dp"
-                                android:background="#72202020"
+                                android:background="#6B202020"
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
 
@@ -147,25 +148,6 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="@dimen/_0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="end|center">
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/more_latest"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/_30dp"
-                            android:layout_margin="@dimen/_4dp"
-                            android:background="@drawable/bac_set"
-                            android:text="@string/more"
-                            android:textColor="@color/white"
-
-                            />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -211,33 +193,14 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="@dimen/_0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="end|center">
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/more_featured"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/_30dp"
-                            android:layout_margin="@dimen/_4dp"
-                            android:background="@drawable/bac_set"
-                            android:text="@string/more"
-                            android:textColor="@color/white"
-
-                            />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_featured"
                     android:layout_width="@dimen/_0dp"
                     android:layout_height="@dimen/_320dp"
-                    android:background="@color/Solitude"
                     android:layout_marginTop="@dimen/_8dp"
+                    android:background="@color/Solitude"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ll_featuredWallpaper"
@@ -269,8 +232,7 @@
             android:src="@drawable/no_connection"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_en"
@@ -283,20 +245,19 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pic_no_connection"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/pic_no_connection" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_try"
             android:layout_width="@dimen/_180dp"
             android:layout_height="@dimen/_70dp"
+            android:layout_marginTop="@dimen/_50dp"
             android:background="@drawable/btn_try_shape"
             android:lineSpacingExtra="@dimen/_5dp"
             android:text="@string/try_again"
             android:textColor="@color/white"
             android:textSize="@dimen/_15sp"
             android:textStyle="bold"
-            android:layout_marginTop="@dimen/_50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_en"

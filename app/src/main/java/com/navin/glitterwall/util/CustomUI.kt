@@ -18,21 +18,24 @@ class CustomUI {
                 fragment.lifecycle.coroutineScope.launch {
                     txtLatest.awaitLayoutChange()
                     txtLatest.setGradientTextColor(
-                        com.navin.glitterwall.R.color.Azalea,
-                        com.navin.glitterwall.R.color.Mauvelous,
+                        com.navin.glitterwall.R.color.torchRed,
+                        com.navin.glitterwall.R.color.radicalRed,
                         com.navin.glitterwall.R.color.Cerise,
                         com.navin.glitterwall.R.color.torchRed,
+                        com.navin.glitterwall.R.color.radicalRed,
+                        com.navin.glitterwall.R.color.Cerise,
                     )
                 }
 
                 fragment.lifecycle.coroutineScope.launch {
                     txtFeatured.awaitLayoutChange()
                     txtFeatured.setGradientTextColor(
-                        com.navin.glitterwall.R.color.Azalea,
-                        com.navin.glitterwall.R.color.Mauvelous,
-                        com.navin.glitterwall.R.color.Cerise,
-                        com.navin.glitterwall.R.color.radicalRed,
                         com.navin.glitterwall.R.color.torchRed,
+                        com.navin.glitterwall.R.color.radicalRed,
+                        com.navin.glitterwall.R.color.Cerise,
+                        com.navin.glitterwall.R.color.torchRed,
+                        com.navin.glitterwall.R.color.radicalRed,
+                        com.navin.glitterwall.R.color.Cerise,
                     )
                 }
             }
@@ -43,6 +46,22 @@ class CustomUI {
             for (i in colorRes.indices) {
                 floatArray.add(i, i.toFloat() / (colorRes.size - 1))
             }
+            // horizontal
+            val textShader: Shader = LinearGradient(0f, 0f,
+                this.width.toFloat(), 0f,
+                colorRes.map { ContextCompat.getColor(context, it) }.toIntArray(),
+                floatArray.toFloatArray(),
+                Shader.TileMode.CLAMP
+            )
+            this.paint.shader = textShader
+        }
+
+       /* private fun TextView.setGradientTextColor(vararg colorRes: Int) {
+            val floatArray = ArrayList<Float>(colorRes.size)
+            for (i in colorRes.indices) {
+                floatArray.add(i, i.toFloat() / (colorRes.size - 1))
+            }
+            // vertical
             val textShader: Shader = LinearGradient(0f, 0f, 0f,
                 this.height.toFloat(),
                 colorRes.map { ContextCompat.getColor(context, it) }.toIntArray(),
@@ -50,7 +69,7 @@ class CustomUI {
                 Shader.TileMode.CLAMP
             )
             this.paint.shader = textShader
-        }
+        }*/
 
         private suspend fun View.awaitLayoutChange() = suspendCancellableCoroutine { cont ->
             val listener = object : View.OnLayoutChangeListener {

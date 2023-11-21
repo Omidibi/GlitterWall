@@ -1,5 +1,6 @@
 package com.navin.glitterwall.activities
 
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -23,6 +24,7 @@ class ShowImageByCatIdActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShowImageByCatIdBinding.inflate(layoutInflater)
+        requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         setContentView(binding.root)
         binding.apply {
             iService = ApiRetrofit.retrofit.create(IService::class.java)
@@ -32,7 +34,7 @@ class ShowImageByCatIdActivity : AppCompatActivity() {
             }else {
                 intent.getParcelableExtra("categoriesInfo")!!
             }
-            catById()
+             catById()
 
             srl.setOnRefreshListener {
                 srlCatById()

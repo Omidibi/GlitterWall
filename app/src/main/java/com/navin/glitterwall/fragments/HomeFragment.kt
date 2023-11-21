@@ -1,6 +1,6 @@
 package com.navin.glitterwall.fragments
 
-import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
-import com.navin.glitterwall.activities.LatestWallpaperActivity
 import com.navin.glitterwall.adapters.BannerAdapter
 import com.navin.glitterwall.adapters.FeaturedWallpapersAdapter
 import com.navin.glitterwall.adapters.LatestWallpapersAdapter
@@ -43,18 +42,6 @@ class HomeFragment : Fragment() {
             Font.homeFragment(requireContext(), binding)
             CustomUI.customUI(this@HomeFragment,binding)
 
-            moreLatest.setOnClickListener {
-                val intent = Intent(requireContext(), LatestWallpaperActivity::class.java)
-                requireContext().startActivity(intent)
-            }
-
-            srl.setOnRefreshListener {
-                srlLatestWallpapers()
-                srlFeaturedWallpapers()
-                srlBanner()
-                srl.isRefreshing = false
-            }
-
             val handler = Handler(Looper.getMainLooper())
             val update = Runnable {
                 if (currentPage == (pagerBanner.adapter?.count ?: 0)) {
@@ -63,6 +50,14 @@ class HomeFragment : Fragment() {
                 pagerBanner.setCurrentItem(currentPage++, true)
             }
             Timer().schedule(object : TimerTask() { override fun run() { handler.post(update) } }, 3000, 3000)
+
+            srl.setOnRefreshListener {
+                srlLatestWallpapers()
+                srlFeaturedWallpapers()
+                srlBanner()
+                currentPage = 0
+                srl.isRefreshing = false
+            }
 
             pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -78,6 +73,11 @@ class HomeFragment : Fragment() {
                     // این متد هر زمان که وضعیت پیمایش صفحه تغییر می‌کند فراخوانی می‌شود
                 }
             })
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                pageIndicatorView.elevation = 1000f
+            }
+
         }
         return binding.root
     }
@@ -88,26 +88,28 @@ class HomeFragment : Fragment() {
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
                 override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    rvLatest.adapter = LatestWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.latestWallpaper!!)
-                    rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    Log.e("", "")
-
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
+                    if (isAdded){
+                        pbHome.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        rvLatest.adapter = LatestWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.latestWallpaper!!)
+                        rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        Log.e("", "")
                     }
                 }
 
+                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
+                    if (isAdded){
+                        Log.e("", "")
+                        pbHome.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        clNoConnection.visibility = View.VISIBLE
+                        btnTry.setOnClickListener {
+                            tryAgainLatestWallpapers()
+                            tryAgainFeaturedWallpapers()
+                            tryAgainBanner()
+                        }
+                    }
+                }
             })
         }
     }
@@ -118,26 +120,28 @@ class HomeFragment : Fragment() {
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
                 override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
-                    Log.e("", "")
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.featuredWallpaper!!)
-                    rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
+                    if (isAdded){
+                        Log.e("", "")
+                        pbHome.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
+                        rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     }
                 }
 
+                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
+                    if (isAdded){
+                        Log.e("", "")
+                        pbHome.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        clNoConnection.visibility = View.VISIBLE
+                        btnTry.setOnClickListener {
+                            tryAgainLatestWallpapers()
+                            tryAgainFeaturedWallpapers()
+                            tryAgainBanner()
+                        }
+                    }
+                }
             })
         }
     }
@@ -148,24 +152,27 @@ class HomeFragment : Fragment() {
             srl.visibility = View.GONE
             iService.banner().enqueue(object : Callback<Banner> {
                 override fun onResponse(call: Call<Banner>, response: Response<Banner>) {
-                    Log.e("", "")
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    pagerBanner.adapter = BannerAdapter(requireContext(), response.body()?.banner!!)
-                }
-
-                override fun onFailure(call: Call<Banner>, t: Throwable) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
+                    if (isAdded){
+                        Log.e("", "")
+                        pbHome.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        pagerBanner.adapter = BannerAdapter(requireContext(), response.body()?.banner!!)
                     }
                 }
 
+                override fun onFailure(call: Call<Banner>, t: Throwable) {
+                    if (isAdded){
+                        Log.e("", "")
+                        pbHome.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        clNoConnection.visibility = View.VISIBLE
+                        btnTry.setOnClickListener {
+                            tryAgainLatestWallpapers()
+                            tryAgainFeaturedWallpapers()
+                            tryAgainBanner()
+                        }
+                    }
+                }
             })
         }
     }
@@ -210,7 +217,7 @@ class HomeFragment : Fragment() {
                     pbHome.visibility = View.GONE
                     srl.visibility = View.VISIBLE
                     nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.featuredWallpaper!!)
+                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
                     rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 }
@@ -291,7 +298,7 @@ class HomeFragment : Fragment() {
                     Log.e("", "")
                     pbHome.visibility = View.GONE
                     nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.featuredWallpaper!!)
+                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
                     rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 }

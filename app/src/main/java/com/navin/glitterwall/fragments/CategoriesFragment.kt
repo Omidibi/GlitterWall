@@ -41,22 +41,26 @@ class CategoriesFragment : Fragment() {
             rvCategories.visibility = View.GONE
             iService.categoriesList().enqueue(object : Callback<Categories>{
                 override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
-                    pbCat.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    rvCategories.visibility = View.VISIBLE
-                    Log.e("","")
-                    rvCategories.adapter = CategoriesAdapter(requireContext(),response.body()?.categories!!)
-                    rvCategories.layoutManager = GridLayoutManager(requireContext(),2)
+                    if (isAdded){
+                        pbCat.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        rvCategories.visibility = View.VISIBLE
+                        Log.e("","")
+                        rvCategories.adapter = CategoriesAdapter(requireContext(),response.body()?.categories!!)
+                        rvCategories.layoutManager = GridLayoutManager(requireContext(),2)
+                    }
                 }
 
                 override fun onFailure(call: Call<Categories>, t: Throwable) {
-                    pbCat.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    rvCategories.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    Log.e("","")
-                    btnTry.setOnClickListener {
-                        tryAgainCategoryList()
+                    if (isAdded){
+                        pbCat.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        rvCategories.visibility = View.GONE
+                        clNoConnection.visibility = View.VISIBLE
+                        Log.e("","")
+                        btnTry.setOnClickListener {
+                            tryAgainCategoryList()
+                        }
                     }
                 }
 

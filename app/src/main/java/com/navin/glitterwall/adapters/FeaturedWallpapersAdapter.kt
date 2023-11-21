@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.navin.glitterwall.R
 import com.navin.glitterwall.activities.ShowImageActivity
-import com.navin.glitterwall.models.FeaturedVideo
+import com.navin.glitterwall.models.AllVideo
 
-class FeaturedWallpapersAdapter(private val context: Context, private val featuredList : List<FeaturedVideo>) : RecyclerView.Adapter<FeaturedWallpapersAdapter.FeaturedVH>() {
+class FeaturedWallpapersAdapter(private val context: Context, private val featuredList : List<AllVideo>) : RecyclerView.Adapter<FeaturedWallpapersAdapter.FeaturedVH>() {
 
     class FeaturedVH(itemView: View) : RecyclerView.ViewHolder(itemView){
         val cvImg = itemView.findViewById<CardView>(R.id.cv_img)!!
@@ -32,13 +32,14 @@ class FeaturedWallpapersAdapter(private val context: Context, private val featur
     override fun onBindViewHolder(holder: FeaturedVH, position: Int) {
         holder.apply {
             val featuredInfo = featuredList[position]
-            Glide.with(context).load(featuredInfo.videoThumbnailB).into(img)
+            Glide.with(context)
+                .load(featuredInfo.videoThumbnailB)
+                .placeholder(R.drawable.coming)
+                .error(R.drawable.error2)
+                .into(img)
             cvImg.setOnClickListener {
                 val intent = Intent(context,ShowImageActivity::class.java)
-                intent.putExtra("wall",featuredInfo.videoThumbnailB)
-                intent.putExtra("id",featuredInfo.id)
-                intent.putExtra("wallUrl",featuredInfo.videoUrl)
-                intent.putExtra("title",featuredInfo.videoTitle)
+                intent.putExtra("allVideo",featuredInfo)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }

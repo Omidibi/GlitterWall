@@ -8,9 +8,10 @@
         android:id="@+id/cv_cat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardElevation="@dimen/_8dp"
         android:layout_margin="@dimen/_12dp"
-        app:cardCornerRadius="@dimen/_10dp">
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardElevation="@dimen/_8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -13,33 +13,33 @@ import com.navin.glitterwall.R
 import com.navin.glitterwall.activities.ShowImageActivity
 import com.navin.glitterwall.models.AllVideo
 
-class CatByIdAdapter(private val context: Context, private val categoriesModel: List<AllVideo>) : RecyclerView.Adapter<CatByIdAdapter.CatByIdVH>() {
+class FavoriteWallpaperAdapter(private val context: Context, private val fvtList: MutableList<AllVideo>): RecyclerView.Adapter<FavoriteWallpaperAdapter.FvtWallpaperVH>() {
 
-    class CatByIdVH (itemView: View) : RecyclerView.ViewHolder(itemView){
-        val cvCat = itemView.findViewById<CardView>(R.id.cv_cat)!!
+    class FvtWallpaperVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvFvt = itemView.findViewById<CardView>(R.id.cv_fvt)!!
         val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatByIdVH {
-        val view = LayoutInflater.from(context).inflate(R.layout.cat_by_id_row,null)
-        return CatByIdVH(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FvtWallpaperVH {
+        val view = LayoutInflater.from(context).inflate(R.layout.fvt_row, null)
+        return FvtWallpaperVH(view)
     }
 
     override fun getItemCount(): Int {
-        return categoriesModel.size
+        return fvtList.size
     }
 
-    override fun onBindViewHolder(holder: CatByIdVH, position: Int) {
+    override fun onBindViewHolder(holder: FvtWallpaperVH, position: Int) {
         holder.apply {
-            val categoriesModelInfo = categoriesModel[position]
+            val fvtInfo = fvtList[position]
             Glide.with(context)
-                .load(categoriesModelInfo.videoThumbnailB)
+                .load(fvtInfo.videoThumbnailB)
                 .placeholder(R.drawable.coming)
                 .error(R.drawable.error2)
                 .into(img)
-            cvCat.setOnClickListener {
-                val intent = Intent(context, ShowImageActivity::class.java)
-                intent.putExtra("allVideo",categoriesModelInfo)
+            cvFvt.setOnClickListener {
+                val intent = Intent(context,ShowImageActivity::class.java)
+                intent.putExtra("allVideo",fvtInfo)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }

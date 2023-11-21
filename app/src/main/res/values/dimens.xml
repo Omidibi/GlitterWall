@@ -70,9 +70,11 @@
     <dimen name="_220dp">220dp</dimen>
     <dimen name="_230dp">230dp</dimen>
     <dimen name="_250dp">250dp</dimen>
+    <dimen name="_280dp">280dp</dimen>
     <dimen name="_300dp">300dp</dimen>
     <dimen name="_310dp">310dp</dimen>
     <dimen name="_320dp">320dp</dimen>
+    <dimen name="_400dp">400dp</dimen>
     <dimen name="_440dp">440dp</dimen>
     <dimen name="_450dp">450dp</dimen>
 

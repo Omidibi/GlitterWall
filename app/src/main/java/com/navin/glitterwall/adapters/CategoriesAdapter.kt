@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
@@ -36,7 +35,11 @@ class CategoriesAdapter(private val context: Context, private val categoriesList
     override fun onBindViewHolder(holder: CategoriesVH, position: Int) {
         holder.apply {
             val categoriesInfo = categoriesList[position]
-            Glide.with(context).load(categoriesInfo.categoryImageThumb).into(imgCat)
+            Glide.with(context)
+                .load(categoriesInfo.categoryImageThumb)
+                .placeholder(R.drawable.coming)
+                .error(R.drawable.error2)
+                .into(imgCat)
             txtTitle.text = categoriesInfo.categoryName
             Font.categoryAdapter(context,holder)
             cvCat.setOnClickListener {

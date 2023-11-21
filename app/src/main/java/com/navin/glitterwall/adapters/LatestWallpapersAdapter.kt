@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.navin.glitterwall.R
 import com.navin.glitterwall.activities.ShowImageActivity
-import com.navin.glitterwall.models.LatestVideo
+import com.navin.glitterwall.models.AllVideo
 
-class LatestWallpapersAdapter(private val context: Context, private val latest: List<LatestVideo>) : RecyclerView.Adapter<LatestWallpapersAdapter.LatestWallpapersVH>() {
+class LatestWallpapersAdapter(private val context: Context, private val latest: List<AllVideo>) : RecyclerView.Adapter<LatestWallpapersAdapter.LatestWallpapersVH>() {
 
     class LatestWallpapersVH(itemView: View) : RecyclerView.ViewHolder(itemView){
         val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
@@ -32,14 +32,15 @@ class LatestWallpapersAdapter(private val context: Context, private val latest: 
     override fun onBindViewHolder(holder: LatestWallpapersVH, position: Int) {
         holder.apply {
             val latestInfo = latest[position]
-            Glide.with(context).load(latestInfo.videoThumbnailB).into(img)
+            Glide.with(context)
+                .load(latestInfo.videoThumbnailB)
+                .placeholder(R.drawable.coming)
+                .error(R.drawable.error2)
+                .into(img)
 
             cvImg.setOnClickListener {
                 val intent = Intent(context,ShowImageActivity::class.java)
-                intent.putExtra("wall",latestInfo.videoThumbnailB)
-                intent.putExtra("id",latestInfo.id)
-                intent.putExtra("wallUrl",latestInfo.videoUrl)
-                intent.putExtra("title",latestInfo.videoTitle)
+                intent.putExtra("allVideo",latestInfo)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             }

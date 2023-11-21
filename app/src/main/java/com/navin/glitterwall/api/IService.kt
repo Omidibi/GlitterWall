@@ -1,6 +1,5 @@
 package com.navin.glitterwall.api
 
-import com.navin.glitterwall.models.AllWallpapers
 import com.navin.glitterwall.models.Banner
 import com.navin.glitterwall.models.CatByIdList
 import com.navin.glitterwall.models.Categories
@@ -23,9 +22,6 @@ interface IService {
 
     @GET("api.php?")
     fun wallByCatId(@Query("cat_id") id: String): Call<CatByIdList>
-
-    @GET("api.php?All_videos")
-    fun allWallpapers(): Call<AllWallpapers>
 
     @GET("api.php?latest_video")
     fun latestWallpaper() : Call<LatestWallpapers>

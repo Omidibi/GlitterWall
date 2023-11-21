@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class LatestWallpapers(
     @SerializedName("ALL_IN_ONE_VIDEO")
-    val latestWallpapers: List<LatestWallpapersModel>
+    val latestWallpapers: List<AllVideo>
 ) : Parcelable

@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CatByIdList(
     @SerializedName("ALL_IN_ONE_VIDEO")
-    val catByIdList: List<CatByIdListModel>
+    val catByIdList: List<AllVideo>
 ) : Parcelable

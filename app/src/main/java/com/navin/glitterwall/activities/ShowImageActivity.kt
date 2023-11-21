@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.app.WallpaperManager
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -21,10 +22,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import com.navin.glitterwall.R
 import com.navin.glitterwall.databinding.ActivityShowImageBinding
+import com.navin.glitterwall.db.WallpaperDB
+import com.navin.glitterwall.db.WallpaperDBAdapter
+import com.navin.glitterwall.models.AllVideo
 import com.navin.glitterwall.util.Font
 import java.io.File
 import java.io.IOException
@@ -32,27 +42,49 @@ import java.io.IOException
 class ShowImageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowImageBinding
     private lateinit var bundle: Bundle
-    private lateinit var wallpaper: String
-    private lateinit var id: String
-    private lateinit var wallUrl: String
-    private lateinit var title: String
-
+    private lateinit var allVideo : AllVideo
+    private lateinit var wallpaperDB : WallpaperDB
+    private lateinit var wallpaperDBAdapter: WallpaperDBAdapter
     @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShowImageBinding.inflate(layoutInflater)
+        requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         setContentView(binding.root)
         binding.apply {
             Font.showImageActivity(applicationContext, binding)
+            wallpaperDB = WallpaperDB(applicationContext)
+            wallpaperDBAdapter = WallpaperDBAdapter(applicationContext)
             bundle = intent.extras!!
-            wallpaper = intent.getStringExtra("wall").toString()
-            id = intent.getStringExtra("id").toString()
-            wallUrl = intent.getStringExtra("wallUrl").toString()
-            title = intent.getStringExtra("title").toString()
+            allVideo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                intent.getParcelableExtra("allVideo",AllVideo::class.java)!!
+            }else {
+                intent.getParcelableExtra("allVideo")!!
+            }
 
             Log.e("", "")
 
-            Glide.with(applicationContext).load(wallpaper).into(img)
+            Glide.with(applicationContext).load(allVideo.videoThumbnailB)
+                .placeholder(R.drawable.coming)
+                .error(R.drawable.error)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        val padding = resources.getDimensionPixelSize(R.dimen._30dp)
+                        img.setPadding(padding)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        return false
+                    }
+
+                })
+                .into(img)
+            if (wallpaperDBAdapter.search(allVideo.id.toInt()).contains(allVideo)){
+                Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
+            }else {
+                Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
+            }
 
             btnDownload.setOnClickListener {
                 downloadImg()
@@ -60,6 +92,17 @@ class ShowImageActivity : AppCompatActivity() {
 
             btnSetWallpaper.setOnClickListener {
                 setWallpaper()
+            }
+
+            fvt.setOnClickListener {
+                if (wallpaperDBAdapter.search(allVideo.id.toInt()).contains(allVideo)){
+                    wallpaperDBAdapter.deleteWallpaper(allVideo.id.toInt())
+                    Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
+                }else{
+                    wallpaperDBAdapter.insertWallpaper(allVideo)
+                    Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
+                }
+
             }
         }
     }
@@ -71,14 +114,14 @@ class ShowImageActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, storagePermissions33, 1)
             } else {
-                Toast.makeText(applicationContext, "شروع دانلود", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, getString(R.string.start_downloading), Toast.LENGTH_LONG).show()
                 Glide.with(this)
                     .asBitmap()
-                    .load(wallUrl)
+                    .load(allVideo.videoUrl)
                     .into(object : CustomTarget<Bitmap>() { override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             val resolver = applicationContext.contentResolver
                             val contentValues = ContentValues().apply {
-                                put(MediaStore.MediaColumns.DISPLAY_NAME, "$id.jpg")
+                                put(MediaStore.MediaColumns.DISPLAY_NAME, "${allVideo.id}.jpg")
                                 put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
                                 put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/GlitterWall")
                             }
@@ -88,7 +131,7 @@ class ShowImageActivity : AppCompatActivity() {
                                 resource.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                             }
                             outputStream?.close()
-                            Toast.makeText(applicationContext, "اتمام دانلود", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, getString(R.string.download_completed), Toast.LENGTH_LONG).show()
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
@@ -103,20 +146,20 @@ class ShowImageActivity : AppCompatActivity() {
             } else {
                 /** روش دانلود برای نسخه 10 اندروید*/
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                    val request = DownloadManager.Request(Uri.parse(wallUrl))
+                    val request = DownloadManager.Request(Uri.parse(allVideo.videoUrl))
                         .setTitle(title)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, "$id.jpg")
+                        .setDestinationInExternalFilesDir(this, Environment.DIRECTORY_PICTURES, "${allVideo.id}.jpg")
                         .setAllowedOverMetered(true)
                         .setAllowedOverRoaming(true)
                     val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     downloadManager.enqueue(request)
                 } else {
                     /** روش دانلود برای دیگر نسخه های اندروید*/
-                    val request = DownloadManager.Request(Uri.parse(wallUrl))
+                    val request = DownloadManager.Request(Uri.parse(allVideo.videoUrl))
                         .setTitle(title)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "/GlitterWall/$id.jpg")
+                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "/GlitterWall/${allVideo.id}.jpg")
                     val downloadManager = applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     downloadManager.enqueue(request)
                 }
@@ -131,7 +174,7 @@ class ShowImageActivity : AppCompatActivity() {
             val prefs = getSharedPreferences("wallpaper", Context.MODE_PRIVATE)
             val editor = prefs.edit()
             /**گرفتن آدرس عکس دانلود شده ی موجود در حافظه */
-            val filePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/GlitterWall/" + id + ".jpg"
+            val filePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/GlitterWall/" + allVideo.id + ".jpg"
             val file = File(filePath)
             /**چک کردن موجودی همچین فایلی در حاغظه */
             if (file.exists()) {
@@ -146,28 +189,28 @@ class ShowImageActivity : AppCompatActivity() {
                         /**چک کردن وضعیت بودن عکس در والپیپر */
                         val currentWallpaperId = prefs.getString("currentWallpaperId", "")
                         /**اگر عکس در والپیپر بود */
-                        if (currentWallpaperId == id) {
-                            Toast.makeText(applicationContext, "این عکس هم اکنون در والپیپر شما ست است", Toast.LENGTH_SHORT).show()
+                        if (currentWallpaperId == allVideo.id) {
+                            Toast.makeText(applicationContext, getString(R.string.set_now), Toast.LENGTH_SHORT).show()
                         } else {
                             /**اگر عکس در والپیپر نبود آن را ست کند */
                             wallpaperManager.setBitmap(bitmap)
-                            Toast.makeText(applicationContext, "ست شد", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, getString(R.string.set_done), Toast.LENGTH_LONG).show()
                             /**ذخیره وضعیت عکس موجود در والپیپر */
-                            editor.putString("currentWallpaperId", id)
+                            editor.putString("currentWallpaperId", allVideo.id)
                             editor.apply()
                         }
                     } catch (e: Exception) {
                         /**مشکل در ست کردن : میتواند به هر دلیلی باشد(خطاا توسط متغیر e چک شود) */
-                        Toast.makeText(applicationContext, "مشکل در ست: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.set_problem), Toast.LENGTH_LONG).show()
                         Log.e("", "")
                     }
                 } else {
                     /**اگر عکسه مورد نظر به درستی دانلود نشده بود و وجود نداشت و یا قابل خواندن توسط bitmap نبود(برابر با نال بود)  */
-                    Toast.makeText(applicationContext, "عکسی یافت نشد مجدد دانلود کنید", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.not_found), Toast.LENGTH_SHORT).show()
                 }
             } else {
                 /**چک کردن موجودی همچین فایلی در حاغظه ->> اگر وجود نداشت */
-                Toast.makeText(applicationContext, "ابتدا عکس دانلود شود سپس ست شود", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, getString(R.string.download_first), Toast.LENGTH_LONG).show()
             }
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             /**اگر اندروید برابر با 10 بود */
@@ -175,7 +218,7 @@ class ShowImageActivity : AppCompatActivity() {
             val prefs = getSharedPreferences("wallpaper", Context.MODE_PRIVATE)
             val editor = prefs.edit()
             /**گرفتن آدرس عکس دانلود شده ی موجود در حافظه */
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "$id.jpg")
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "${allVideo.id}.jpg")
             /**چک کردن موجودی همچین فایلی در حاغظه */
             if (file.exists()) {
                 /**دادن فایل به متد decodeFile در صورت بودن */
@@ -189,28 +232,29 @@ class ShowImageActivity : AppCompatActivity() {
                         /**چک کردن وضعیت بودن عکس در والپیپر */
                         val currentWallpaperId = prefs.getString("currentWallpaperId", "")
                         /**اگر عکس در والپیپر بود */
-                        if (currentWallpaperId == id) {
-                            Toast.makeText(applicationContext, "این عکس هم اکنون در والپیپر شما ست است", Toast.LENGTH_SHORT).show()
+                        if (currentWallpaperId == allVideo.id) {
+                            Toast.makeText(applicationContext, getString(R.string.set_now), Toast.LENGTH_SHORT).show()
                         } else {
                             /**اگر عکس در والپیپر نبود آن را ست کند */
                             wallpaperManager.setBitmap(bitmap)
-                            Toast.makeText(applicationContext, "ست شد", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, getString(R.string.set_done), Toast.LENGTH_LONG).show()
                             /**ذخیره وضعیت عکس موجود در والپیپر */
-                            editor.putString("currentWallpaperId", id)
+                            editor.putString("currentWallpaperId", allVideo.id)
                             editor.apply()
                         }
                     } catch (ex: IOException) {
                         /**مشکل در ست کردن : میتواند به هر دلیلی باشد(خطاا توسط متغیر e چک شود) */
+                        Toast.makeText(applicationContext, getString(R.string.set_problem), Toast.LENGTH_LONG).show()
                         ex.printStackTrace()
                         Log.e("", "")
                     }
                 } else {
                     /**اگر عکسه مورد نظر به درستی دانلود نشده بود و وجود نداشت و یا قابل خواندن توسط bitmap نبود(برابر با نال بود)  */
-                    Toast.makeText(applicationContext, "عکسی یافت نشد مجدد دانلود کنید", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.not_found), Toast.LENGTH_SHORT).show()
                 }
             } else {
                 /**چک کردن موجودی همچین فایلی در حاغظه ->> اگر وجود نداشت */
-                Toast.makeText(applicationContext, "ابتدا عکس دانلود شود سپس ست شود", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.download_first), Toast.LENGTH_LONG).show()
             }
         } else {
             /**ست برای دیگر نسخه های اندروید */
@@ -219,7 +263,7 @@ class ShowImageActivity : AppCompatActivity() {
             val editor = prefs.edit()
             /**گرفتن آدرس عکس دانلود شده ی موجود در حافظه */
             val filePath =
-                getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/GlitterWall/" + id + ".jpg"
+                getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/GlitterWall/" + allVideo.id + ".jpg"
             val file = File(filePath)
             /**چک کردن موجودی همچین فایلی در حاغظه */
             if (file.exists()) {
@@ -234,29 +278,29 @@ class ShowImageActivity : AppCompatActivity() {
                         /**چک کردن وضعیت بودن عکس در والپیپر */
                         val currentWallpaperId = prefs.getString("currentWallpaperId", "")
                         /**اگر عکس در والپیپر بود */
-                        if (currentWallpaperId == id) {
-                            Toast.makeText(applicationContext, "این عکس هم اکنون در والپیپر شما ست است", Toast.LENGTH_SHORT).show()
+                        if (currentWallpaperId == allVideo.id) {
+                            Toast.makeText(applicationContext, getString(R.string.set_now), Toast.LENGTH_SHORT).show()
                         } else {
                             /**اگر عکس در والپیپر نبود آن را ست کند */
                             wallpaperManager.setBitmap(bitmap)
-                            Toast.makeText(applicationContext, "ست شد", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, getString(R.string.set_done), Toast.LENGTH_LONG).show()
                             /**ذخیره وضعیت عکس موجود در والپیپر */
-                            editor.putString("currentWallpaperId", id)
+                            editor.putString("currentWallpaperId", allVideo.id)
                             editor.apply()
                         }
 
                     } catch (e: Exception) {
                         /**مشکل در ست کردن : میتواند به هر دلیلی باشد(خطاا توسط متغیر e چک شود) */
-                        Toast.makeText(applicationContext, "مشکل در ست: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.set_problem), Toast.LENGTH_LONG).show()
                         Log.e("", "")
                     }
                 } else {
                     /**اگر عکسه مورد نظر به درستی دانلود نشده بود و وجود نداشت و یا قابل خواندن توسط bitmap نبود(برابر با نال بود)  */
-                    Toast.makeText(applicationContext, "عکسی یافت نشد مجدد دانلود کنید", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.not_found), Toast.LENGTH_SHORT).show()
                 }
             } else {
                 /**چک کردن موجودی همچین فایلی در حاغظه ->> اگر وجود نداشت */
-                Toast.makeText(applicationContext, "ابتدا عکس دانلود شود سپس ست شود", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, getString(R.string.download_first), Toast.LENGTH_LONG).show()
             }
         }
     }

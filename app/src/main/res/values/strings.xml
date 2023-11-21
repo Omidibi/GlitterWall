@@ -11,5 +11,15 @@
     <string name="featured">Featured</string>
     <string name="no_internet_connection">NO INTERNET CONNECTION</string>
     <string name="try_again">TRY AGAIN</string>
+    <string name="favorites">Favorites</string>
+    <string name="start_downloading">Start Downloading</string>
+    <string name="download_completed">Download Completed</string>
+    <string name="set_now">This picture is now set in your wallpaper</string>
+    <string name="set_done">Set Done</string>
+    <string name="set_problem">Set Problem</string>
+    <string name="not_found">No picture found</string>
+    <string name="download_first">Download the picture first, then set it</string>
+    <string name="no_favorites_yet">No favorites yet!</string>
+    <string name="click_the_heart">Click the heart icon on the image to add to favorites</string>
 
 </resources>
