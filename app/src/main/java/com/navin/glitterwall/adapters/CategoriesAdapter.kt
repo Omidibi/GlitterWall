@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.navin.glitterwall.R
 import com.navin.glitterwall.activities.ShowImageByCatIdActivity
 import com.navin.glitterwall.models.CategoriesModel
-import com.navin.glitterwall.util.Font
+import com.navin.glitterwall.util.font.Font
 
 class CategoriesAdapter(private val context: Context, private val categoriesList : List<CategoriesModel>): RecyclerView.Adapter<CategoriesAdapter.CategoriesVH>() {
 

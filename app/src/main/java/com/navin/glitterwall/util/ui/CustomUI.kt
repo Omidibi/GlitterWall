@@ -1,4 +1,4 @@
-package com.navin.glitterwall.util
+package com.navin.glitterwall.util.ui
 
 import android.graphics.LinearGradient
 import android.graphics.Shader

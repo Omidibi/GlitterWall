@@ -1,4 +1,4 @@
-package com.navin.glitterwall.util
+package com.navin.glitterwall.util.font
 
 import android.content.Context
 import android.graphics.Typeface

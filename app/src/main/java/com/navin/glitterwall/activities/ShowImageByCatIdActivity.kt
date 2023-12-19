@@ -19,23 +19,33 @@ import retrofit2.Response
 class ShowImageByCatIdActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowImageByCatIdBinding
     private lateinit var iService: IService
-    private lateinit var catById : CategoriesModel
+    private lateinit var catById: CategoriesModel
     private lateinit var bundle: Bundle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupBindingAndInitializeCatById()
+        catById()
+        srlStatusInFragment()
+
+    }
+
+    private fun setupBindingAndInitializeCatById() {
         binding = ActivityShowImageByCatIdBinding.inflate(layoutInflater)
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         setContentView(binding.root)
         binding.apply {
             iService = ApiRetrofit.retrofit.create(IService::class.java)
             bundle = intent.extras!!
-            catById = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                intent.getParcelableExtra("categoriesInfo",CategoriesModel::class.java)!!
-            }else {
+            catById = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra("categoriesInfo", CategoriesModel::class.java)!!
+            } else {
                 intent.getParcelableExtra("categoriesInfo")!!
             }
-             catById()
+        }
+    }
 
+    private fun srlStatusInFragment() {
+        binding.apply {
             srl.setOnRefreshListener {
                 srlCatById()
                 srl.isRefreshing = false
@@ -43,16 +53,17 @@ class ShowImageByCatIdActivity : AppCompatActivity() {
         }
     }
 
-    private fun catById(){
+    private fun catById() {
         binding.apply {
             pb.visibility = View.VISIBLE
             srl.visibility = View.GONE
-            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList>{
+            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList> {
                 override fun onResponse(call: Call<CatByIdList>, response: Response<CatByIdList>) {
                     pb.visibility = View.GONE
                     srl.visibility = View.VISIBLE
-                    rvCatById.adapter = CatByIdAdapter(applicationContext,response.body()?.catByIdList!!)
-                    rvCatById.layoutManager = GridLayoutManager(applicationContext,2)
+                    rvCatById.adapter =
+                        CatByIdAdapter(applicationContext, response.body()?.catByIdList!!)
+                    rvCatById.layoutManager = GridLayoutManager(applicationContext, 2)
                 }
 
                 override fun onFailure(call: Call<CatByIdList>, t: Throwable) {
@@ -68,18 +79,19 @@ class ShowImageByCatIdActivity : AppCompatActivity() {
         }
     }
 
-    private fun tryAgainCatById(){
+    private fun tryAgainCatById() {
         binding.apply {
             clNoConnection.visibility = View.GONE
             pb.visibility = View.VISIBLE
             srl.visibility = View.GONE
-            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList>{
+            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList> {
                 override fun onResponse(call: Call<CatByIdList>, response: Response<CatByIdList>) {
                     pb.visibility = View.GONE
                     clNoConnection.visibility = View.GONE
                     srl.visibility = View.VISIBLE
-                    rvCatById.adapter = CatByIdAdapter(applicationContext,response.body()?.catByIdList!!)
-                    rvCatById.layoutManager = GridLayoutManager(applicationContext,2)
+                    rvCatById.adapter =
+                        CatByIdAdapter(applicationContext, response.body()?.catByIdList!!)
+                    rvCatById.layoutManager = GridLayoutManager(applicationContext, 2)
                 }
 
                 override fun onFailure(call: Call<CatByIdList>, t: Throwable) {
@@ -92,16 +104,17 @@ class ShowImageByCatIdActivity : AppCompatActivity() {
         }
     }
 
-    private fun srlCatById(){
+    private fun srlCatById() {
         binding.apply {
             pb.visibility = View.VISIBLE
             srl.visibility = View.GONE
-            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList>{
+            iService.wallByCatId(catById.cid).enqueue(object : Callback<CatByIdList> {
                 override fun onResponse(call: Call<CatByIdList>, response: Response<CatByIdList>) {
                     pb.visibility = View.GONE
                     srl.visibility = View.VISIBLE
-                    rvCatById.adapter = CatByIdAdapter(applicationContext,response.body()?.catByIdList!!)
-                    rvCatById.layoutManager = GridLayoutManager(applicationContext,2)
+                    rvCatById.adapter =
+                        CatByIdAdapter(applicationContext, response.body()?.catByIdList!!)
+                    rvCatById.layoutManager = GridLayoutManager(applicationContext, 2)
                 }
 
                 override fun onFailure(call: Call<CatByIdList>, t: Throwable) {

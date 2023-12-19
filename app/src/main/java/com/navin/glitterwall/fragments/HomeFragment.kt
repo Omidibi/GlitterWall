@@ -19,8 +19,8 @@ import com.navin.glitterwall.api.IService
 import com.navin.glitterwall.databinding.FragmentHomeBinding
 import com.navin.glitterwall.models.Banner
 import com.navin.glitterwall.models.HomeWallpaper
-import com.navin.glitterwall.util.CustomUI
-import com.navin.glitterwall.util.Font
+import com.navin.glitterwall.util.ui.CustomUI
+import com.navin.glitterwall.util.font.Font
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,16 +32,27 @@ class HomeFragment : Fragment() {
     private lateinit var iService: IService
     private var currentPage = 0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+        setupBinding()
+        latestWallpapers()
+        featuredWallpapers()
+        banner()
+        setupPagerBanner()
+        srlStatusInFragment()
+
+        return binding.root
+    }
+    private fun setupBinding() {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         binding.apply {
             iService = ApiRetrofit.retrofit.create(IService::class.java)
-            latestWallpapers()
-            featuredWallpapers()
-            banner()
-
             Font.homeFragment(requireContext(), binding)
-            CustomUI.customUI(this@HomeFragment,binding)
+            CustomUI.customUI(this@HomeFragment, binding)
+        }
+    }
 
+    private fun setupPagerBanner() {
+        binding.apply {
             val handler = Handler(Looper.getMainLooper())
             val update = Runnable {
                 if (currentPage == (pagerBanner.adapter?.count ?: 0)) {
@@ -49,18 +60,18 @@ class HomeFragment : Fragment() {
                 }
                 pagerBanner.setCurrentItem(currentPage++, true)
             }
-            Timer().schedule(object : TimerTask() { override fun run() { handler.post(update) } }, 3000, 3000)
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    handler.post(update)
+                }
+            }, 3000, 3000)
 
-            srl.setOnRefreshListener {
-                srlLatestWallpapers()
-                srlFeaturedWallpapers()
-                srlBanner()
-                currentPage = 0
-                srl.isRefreshing = false
-            }
-
-            pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
                     // این متد هر زمان که کاربر صفحه را می‌چرخاند فراخوانی می‌شود
                 }
 
@@ -77,9 +88,19 @@ class HomeFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 pageIndicatorView.elevation = 1000f
             }
-
         }
-        return binding.root
+    }
+
+    private fun srlStatusInFragment() {
+        binding.apply {
+            srl.setOnRefreshListener {
+                srlLatestWallpapers()
+                srlFeaturedWallpapers()
+                srlBanner()
+                currentPage = 0
+                srl.isRefreshing = false
+            }
+        }
     }
 
     private fun latestWallpapers() {
@@ -87,18 +108,28 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
-                    if (isAdded){
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
+                    if (isAdded) {
                         pbHome.visibility = View.GONE
                         srl.visibility = View.VISIBLE
-                        rvLatest.adapter = LatestWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.latestWallpaper!!)
-                        rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        rvLatest.adapter = LatestWallpapersAdapter(
+                            requireContext(),
+                            response.body()?.homeWallpaper?.latestWallpaper!!
+                        )
+                        rvLatest.layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
                         Log.e("", "")
                     }
                 }
 
                 override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
-                    if (isAdded){
+                    if (isAdded) {
                         Log.e("", "")
                         pbHome.visibility = View.VISIBLE
                         srl.visibility = View.GONE
@@ -119,18 +150,28 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
-                    if (isAdded){
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
+                    if (isAdded) {
                         Log.e("", "")
                         pbHome.visibility = View.GONE
                         srl.visibility = View.VISIBLE
-                        rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
-                        rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        rvFeatured.adapter = FeaturedWallpapersAdapter(
+                            requireContext(),
+                            response.body()?.homeWallpaper?.allWallpaper!!
+                        )
+                        rvFeatured.layoutManager = LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
                     }
                 }
 
                 override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
-                    if (isAdded){
+                    if (isAdded) {
                         Log.e("", "")
                         pbHome.visibility = View.VISIBLE
                         srl.visibility = View.GONE
@@ -152,7 +193,7 @@ class HomeFragment : Fragment() {
             srl.visibility = View.GONE
             iService.banner().enqueue(object : Callback<Banner> {
                 override fun onResponse(call: Call<Banner>, response: Response<Banner>) {
-                    if (isAdded){
+                    if (isAdded) {
                         Log.e("", "")
                         pbHome.visibility = View.GONE
                         srl.visibility = View.VISIBLE
@@ -161,7 +202,7 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onFailure(call: Call<Banner>, t: Throwable) {
-                    if (isAdded){
+                    if (isAdded) {
                         Log.e("", "")
                         pbHome.visibility = View.VISIBLE
                         srl.visibility = View.GONE
@@ -183,13 +224,20 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
                     clNoConnection.visibility = View.GONE
                     pbHome.visibility = View.GONE
                     srl.visibility = View.VISIBLE
                     nsv.visibility = View.VISIBLE
-                    rvLatest.adapter = LatestWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.latestWallpaper!!)
-                    rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    rvLatest.adapter = LatestWallpapersAdapter(
+                        requireContext(),
+                        response.body()?.homeWallpaper?.latestWallpaper!!
+                    )
+                    rvLatest.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     Log.e("", "")
 
                 }
@@ -211,14 +259,21 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             srl.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
                     Log.e("", "")
                     clNoConnection.visibility = View.GONE
                     pbHome.visibility = View.GONE
                     srl.visibility = View.VISIBLE
                     nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
-                    rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    rvFeatured.adapter = FeaturedWallpapersAdapter(
+                        requireContext(),
+                        response.body()?.homeWallpaper?.allWallpaper!!
+                    )
+                    rvFeatured.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 }
 
@@ -264,11 +319,18 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             nsv.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
                     pbHome.visibility = View.GONE
                     nsv.visibility = View.VISIBLE
-                    rvLatest.adapter = LatestWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.latestWallpaper!!)
-                    rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    rvLatest.adapter = LatestWallpapersAdapter(
+                        requireContext(),
+                        response.body()?.homeWallpaper?.latestWallpaper!!
+                    )
+                    rvLatest.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     Log.e("", "")
 
                 }
@@ -294,12 +356,19 @@ class HomeFragment : Fragment() {
             pbHome.visibility = View.VISIBLE
             nsv.visibility = View.GONE
             iService.home().enqueue(object : Callback<HomeWallpaper> {
-                override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
+                override fun onResponse(
+                    call: Call<HomeWallpaper>,
+                    response: Response<HomeWallpaper>
+                ) {
                     Log.e("", "")
                     pbHome.visibility = View.GONE
                     nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(requireContext(), response.body()?.homeWallpaper?.allWallpaper!!)
-                    rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    rvFeatured.adapter = FeaturedWallpapersAdapter(
+                        requireContext(),
+                        response.body()?.homeWallpaper?.allWallpaper!!
+                    )
+                    rvFeatured.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 }
 

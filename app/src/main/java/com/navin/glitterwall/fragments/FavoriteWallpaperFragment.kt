@@ -12,26 +12,31 @@ import com.navin.glitterwall.db.WallpaperDB
 import com.navin.glitterwall.db.WallpaperDBAdapter
 
 class FavoriteWallpaperFragment : Fragment() {
-    private lateinit var binding : FragmentFavoriteWallpaperBinding
-    private lateinit var wallpaperDB : WallpaperDB
+    private lateinit var binding: FragmentFavoriteWallpaperBinding
+    private lateinit var wallpaperDB: WallpaperDB
     private lateinit var wallpaperDBAdapter: WallpaperDBAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        setupBinding()
+
+        return binding.root
+    }
+
+    private fun setupBinding() {
         binding = FragmentFavoriteWallpaperBinding.inflate(layoutInflater)
         binding.apply {
             wallpaperDB = WallpaperDB(requireContext())
             wallpaperDBAdapter = WallpaperDBAdapter(requireContext())
-
         }
-        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         binding.apply {
-            rvFvt.adapter = FavoriteWallpaperAdapter(requireContext(),wallpaperDBAdapter.showWallpaper())
-            rvFvt.layoutManager = GridLayoutManager(requireContext(),2)
+            rvFvt.adapter =
+                FavoriteWallpaperAdapter(requireContext(), wallpaperDBAdapter.showWallpaper())
+            rvFvt.layoutManager = GridLayoutManager(requireContext(), 2)
 
-            if (wallpaperDBAdapter.showWallpaper().isEmpty()){
+            if (wallpaperDBAdapter.showWallpaper().isEmpty()) {
                 showState.visibility = View.VISIBLE
                 rvFvt.visibility = View.GONE
             } else {
