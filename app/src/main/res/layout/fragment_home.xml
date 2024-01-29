@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Solitude"
-    tools:context=".fragments.HomeFragment">
+    tools:context=".ui.main.home.HomeFragment">
 
     <ProgressBar
         android:id="@+id/pb_home"
@@ -100,7 +100,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
 
-                            <androidx.appcompat.widget.AppCompatTextView
+                            <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
                                 android:id="@+id/txt_show"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                         android:layout_weight="1"
                         android:gravity="start|center">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
                             android:id="@+id/txt_latest"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                         android:layout_weight="1"
                         android:gravity="start|center">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
                             android:id="@+id/txt_featured"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
             android:id="@+id/txt_en"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -247,7 +247,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pic_no_connection" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.omid.glitterwall.util.customViews.customFonts.IranSansButton
             android:id="@+id/btn_try"
             android:layout_width="@dimen/_180dp"
             android:layout_height="@dimen/_70dp"

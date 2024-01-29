@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Solitude"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.mainActivity.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
                 android:id="@+id/title_toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
