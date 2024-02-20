@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.omid.glitterwall"
         minSdk = 17
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
@@ -51,7 +51,7 @@ android {
         implementation("com.squareup.picasso:picasso:2.71828")
         implementation("androidx.multidex:multidex:2.0.1")
         implementation("com.romandanylyk:pageindicatorview:1.0.3")
-        implementation("com.github.bumptech.glide:glide:4.15.1")
+        implementation("com.github.bumptech.glide:glide:4.16.0")
         implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     }
 }
