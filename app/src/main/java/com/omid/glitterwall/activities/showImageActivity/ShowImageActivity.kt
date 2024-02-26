@@ -27,21 +27,21 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.ActivityShowImageBinding
-import com.omid.glitterwall.db.WallpaperDB
-import com.omid.glitterwall.db.WallpaperDBAdapter
-import com.omid.glitterwall.model.models.AllVideo
+import com.omid.glitterwall.db.RoomDBInstance
+import com.omid.glitterwall.models.models.AllVideo
 import java.io.File
 import java.io.IOException
 
 class ShowImageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowImageBinding
-    private lateinit var bundle: Bundle
     private lateinit var allVideo: AllVideo
-    private lateinit var wallpaperDB: WallpaperDB
-    private lateinit var wallpaperDBAdapter: WallpaperDBAdapter
+
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private var storagePermissions33 = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-    private var storagePermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    private var storagePermissions = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,6 @@ class ShowImageActivity : AppCompatActivity() {
         setupBindingAndInitializeAllVideo()
         clickEvent()
         savePhotoInDatabase()
-
     }
 
     private fun setupBindingAndInitializeAllVideo() {
@@ -57,16 +56,11 @@ class ShowImageActivity : AppCompatActivity() {
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         binding.apply {
             setContentView(root)
-            wallpaperDB = WallpaperDB(applicationContext)
-            wallpaperDBAdapter = WallpaperDBAdapter(applicationContext)
-            bundle = intent.extras!!
             allVideo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra("allVideo", AllVideo::class.java)!!
             } else {
                 intent.getParcelableExtra("allVideo")!!
             }
-
-            Log.e("", "")
 
             Glide.with(applicationContext)
                 .load(allVideo.videoThumbnailB)
@@ -74,7 +68,8 @@ class ShowImageActivity : AppCompatActivity() {
                 .error(R.drawable.error2)
                 .into(img)
 
-            if (wallpaperDBAdapter.search(allVideo.id.toInt()).contains(allVideo)) {
+
+            if (RoomDBInstance.roomDbInstance.dao().search(allVideo.id).isNotEmpty()) {
                 Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
             } else {
                 Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
@@ -98,14 +93,15 @@ class ShowImageActivity : AppCompatActivity() {
     private fun savePhotoInDatabase() {
         binding.apply {
             fvt.setOnClickListener {
-                if (wallpaperDBAdapter.search(allVideo.id.toInt()).contains(allVideo)) {
-                    wallpaperDBAdapter.deleteWallpaper(allVideo.id.toInt())
+                if (RoomDBInstance.roomDbInstance.dao().search(allVideo.id).isNotEmpty()) {
+                    RoomDBInstance.roomDbInstance.dao().deleteGW(allVideo.id)
                     Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
-                } else {
-                    wallpaperDBAdapter.insertWallpaper(allVideo)
-                    Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
-                }
 
+                } else {
+                    RoomDBInstance.roomDbInstance.dao().insert(allVideo)
+                    Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
+
+                }
             }
         }
     }

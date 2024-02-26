@@ -1,14 +1,10 @@
 package com.omid.glitterwall.db
 
-import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
-import com.omid.glitterwall.model.models.AllVideo
 
 class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
 
-    fun insertWallpaper(allVideo: AllVideo): Long {
+   /* fun insertWallpaper(allVideo: AllVideo): Long {
         val db: SQLiteDatabase = writableDatabase
         val content: ContentValues = ContentValues()
         content.put("catId", allVideo.catId)
@@ -97,5 +93,5 @@ class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
             )
         }
         return result
-    }
+    }*/
 }

@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.ActivityMainBinding
-import com.omid.glitterwall.ui.main.categories.CategoriesFragment
-import com.omid.glitterwall.ui.main.favorite.FavoriteWallpaperFragment
-import com.omid.glitterwall.ui.main.home.HomeFragment
+import com.omid.glitterwall.ui.dashboard.categories.CategoriesFragment
+import com.omid.glitterwall.ui.dashboard.favorite.FavoriteWallpaperFragment
+import com.omid.glitterwall.ui.dashboard.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.favorite.FavoriteWallpaperFragment">
+    tools:context=".ui.dashboard.favorite.FavoriteWallpaperFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_fvt"
@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
+        <com.omid.glitterwall.ui.customViews.customFonts.IranSansTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bac" />
 
-        <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
+        <com.omid.glitterwall.ui.customViews.customFonts.IranSansTextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

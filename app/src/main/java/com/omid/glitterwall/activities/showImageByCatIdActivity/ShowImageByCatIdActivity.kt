@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.omid.glitterwall.api.WebServiceCaller
 import com.omid.glitterwall.databinding.ActivityShowImageByCatIdBinding
-import com.omid.glitterwall.model.models.CatByIdList
-import com.omid.glitterwall.model.listener.IListener
-import com.omid.glitterwall.model.models.Category
+import com.omid.glitterwall.models.models.CatByIdList
+import com.omid.glitterwall.models.listener.IListener
+import com.omid.glitterwall.models.models.Category
 import retrofit2.Call
 
 class ShowImageByCatIdActivity : AppCompatActivity() {

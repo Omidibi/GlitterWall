@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
 }
 
 android {
@@ -53,5 +54,9 @@ android {
         implementation("com.romandanylyk:pageindicatorview:1.0.3")
         implementation("com.github.bumptech.glide:glide:4.16.0")
         implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+        val roomVersion = "2.6.1"
+        implementation("androidx.room:room-runtime:$roomVersion")
+        annotationProcessor("androidx.room:room-compiler:$roomVersion")
+        kapt("androidx.room:room-compiler:$roomVersion")
     }
 }

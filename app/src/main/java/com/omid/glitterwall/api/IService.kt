@@ -1,9 +1,9 @@
 package com.omid.glitterwall.api
 
-import com.omid.glitterwall.model.models.Banner
-import com.omid.glitterwall.model.models.CatByIdList
-import com.omid.glitterwall.model.models.Categories
-import com.omid.glitterwall.model.models.HomeWallpaper
+import com.omid.glitterwall.models.models.Banner
+import com.omid.glitterwall.models.models.CatByIdList
+import com.omid.glitterwall.models.models.Categories
+import com.omid.glitterwall.models.models.HomeWallpaper
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

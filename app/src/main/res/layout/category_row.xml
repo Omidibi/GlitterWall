@@ -28,7 +28,7 @@
 
                 />
 
-            <com.omid.glitterwall.util.customViews.customFonts.IranSansTextView
+            <com.omid.glitterwall.ui.customViews.customFonts.IranSansTextView
                 android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.omid.glitterwall.activities.showImageByCatIdActivity
+package com.omid.glitterwall.ui.dashboard.favorite
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,28 +10,28 @@ import com.omid.glitterwall.activities.showImageActivity.ShowImageActivity
 import com.omid.glitterwall.models.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
-class CatByIdAdapter(private val categoriesModel: List<AllVideo>) : RecyclerView.Adapter<CatByIdVH>() {
+class FavoriteWallpaperAdapter(private val fvtList: MutableList<AllVideo>): RecyclerView.Adapter<FvtWallpaperVH>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatByIdVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.cat_by_id_row,null)
-        return CatByIdVH(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FvtWallpaperVH {
+        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.fvt_row, null)
+        return FvtWallpaperVH(view)
     }
 
     override fun getItemCount(): Int {
-        return categoriesModel.size
+        return fvtList.size
     }
 
-    override fun onBindViewHolder(holder: CatByIdVH, position: Int) {
+    override fun onBindViewHolder(holder: FvtWallpaperVH, position: Int) {
         holder.apply {
-            val categoriesModelInfo = categoriesModel[position]
+            val fvtInfo = fvtList[position]
             Glide.with(AppConfiguration.getContext())
-                .load(categoriesModelInfo.videoThumbnailB)
+                .load(fvtInfo.videoThumbnailB)
                 .placeholder(R.drawable.coming)
                 .error(R.drawable.error2)
                 .into(img)
-            cvCat.setOnClickListener {
+            cvFvt.setOnClickListener {
                 val intent = Intent(AppConfiguration.getContext(), ShowImageActivity::class.java)
-                intent.putExtra("allVideo",categoriesModelInfo)
+                intent.putExtra("allVideo",fvtInfo)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 AppConfiguration.getContext().startActivity(intent)
             }
