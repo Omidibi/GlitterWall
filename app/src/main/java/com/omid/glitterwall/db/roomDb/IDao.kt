@@ -1,4 +1,4 @@
-package com.omid.glitterwall.db
+package com.omid.glitterwall.db.roomDb
 
 import androidx.room.Dao
 import androidx.room.Delete

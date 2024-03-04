@@ -1,132 +1,79 @@
 package com.omid.glitterwall.ui.dashboard.categories
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.omid.glitterwall.api.WebServiceCaller
 import com.omid.glitterwall.databinding.FragmentCategoriesBinding
-import com.omid.glitterwall.models.models.Categories
-import com.omid.glitterwall.models.listener.IListener
-import retrofit2.Call
 
 class CategoriesFragment : Fragment() {
     private lateinit var binding: FragmentCategoriesBinding
-    private val webServiceCaller = WebServiceCaller()
+    private lateinit var owner: LifecycleOwner
+    private lateinit var categoriesViewModel: CategoriesViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        owner = this
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupBinding()
-        categoryList()
+        setupObservers()
         srlStatusInFragment()
-
         return binding.root
     }
 
     private fun setupBinding() {
         binding = FragmentCategoriesBinding.inflate(layoutInflater)
-        binding.apply {
+        categoriesViewModel = ViewModelProvider(this)[CategoriesViewModel::class.java]
+    }
 
+    private fun setupObservers() {
+        binding.apply {
+            categoriesViewModel.category.observe(viewLifecycleOwner) { categories ->
+                pbCat.visibility = View.GONE
+                srl.visibility = View.VISIBLE
+                rvCategories.visibility = View.VISIBLE
+                rvCategories.adapter = CategoriesAdapter(categories.categories)
+                rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
+            }
+
+            categoriesViewModel.errorCategories.observe(viewLifecycleOwner) { hasErrorCategories ->
+                if (hasErrorCategories) {
+                    pbCat.visibility = View.GONE
+                    srl.visibility = View.GONE
+                    rvCategories.visibility = View.GONE
+                    clNoConnection.visibility = View.VISIBLE
+                    btnTry.setOnClickListener {
+                        pbCat.visibility = View.VISIBLE
+                        clNoConnection.visibility = View.GONE
+                        categoriesViewModel.getCategoryList()
+                    }
+                }
+            }
         }
     }
 
     private fun srlStatusInFragment() {
         binding.apply {
             srl.setOnRefreshListener {
-                srlCategoryList()
+                srlObservers()
                 srl.isRefreshing = false
             }
         }
     }
 
-    private fun categoryList() {
+    private fun srlObservers() {
         binding.apply {
             pbCat.visibility = View.VISIBLE
             srl.visibility = View.GONE
             rvCategories.visibility = View.GONE
-            webServiceCaller.getCategoryList(object : IListener<Categories> {
-                override fun onSuccess(call: Call<Categories>, response: Categories) {
-                    if (isAdded) {
-                        pbCat.visibility = View.GONE
-                        srl.visibility = View.VISIBLE
-                        rvCategories.visibility = View.VISIBLE
-                        Log.e("", "")
-                        rvCategories.adapter = CategoriesAdapter(response.categories)
-                        rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
-                    }
-                }
-
-                override fun onFailure(call: Call<Categories>, t: Throwable, errorResponse: String) {
-                    if (isAdded) {
-                        pbCat.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        rvCategories.visibility = View.GONE
-                        clNoConnection.visibility = View.VISIBLE
-                        Log.e("", "")
-                        btnTry.setOnClickListener {
-                            tryAgainCategoryList()
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    private fun tryAgainCategoryList() {
-        binding.apply {
-            clNoConnection.visibility = View.GONE
-            pbCat.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            rvCategories.visibility = View.GONE
-            webServiceCaller.getCategoryList(object : IListener<Categories> {
-                override fun onSuccess(call: Call<Categories>, response: Categories) {
-                    pbCat.visibility = View.GONE
-                    clNoConnection.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    rvCategories.visibility = View.VISIBLE
-                    Log.e("", "")
-                    rvCategories.adapter = CategoriesAdapter(response.categories)
-                    rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
-                }
-
-                override fun onFailure(call: Call<Categories>, t: Throwable, errorResponse: String) {
-                    pbCat.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    rvCategories.visibility = View.GONE
-                    Log.e("", "")
-                }
-            })
-        }
-    }
-
-    private fun srlCategoryList() {
-        binding.apply {
-            pbCat.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            rvCategories.visibility = View.GONE
-            webServiceCaller.getCategoryList(object : IListener<Categories> {
-                override fun onSuccess(call: Call<Categories>, response: Categories) {
-                    pbCat.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    rvCategories.visibility = View.VISIBLE
-                    Log.e("", "")
-                    rvCategories.adapter = CategoriesAdapter(response.categories)
-                    rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
-                }
-
-                override fun onFailure(call: Call<Categories>, t: Throwable, errorResponse: String) {
-                    pbCat.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    rvCategories.visibility = View.GONE
-                    Log.e("", "")
-                    btnTry.setOnClickListener {
-                        tryAgainCategoryList()
-                    }
-                }
-            })
+            categoriesViewModel.getCategoryList()
         }
     }
 }

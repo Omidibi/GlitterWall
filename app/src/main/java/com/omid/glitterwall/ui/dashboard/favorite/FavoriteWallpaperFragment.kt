@@ -5,34 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.omid.glitterwall.databinding.FragmentFavoriteWallpaperBinding
-import com.omid.glitterwall.db.RoomDBInstance
 
 class FavoriteWallpaperFragment : Fragment() {
     private lateinit var binding: FragmentFavoriteWallpaperBinding
+    private lateinit var fvtViewModel: FvtViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        setupBinding()
-
+        setupBindingAndViewModel()
         return binding.root
     }
 
-    private fun setupBinding() {
+    private fun setupBindingAndViewModel() {
         binding = FragmentFavoriteWallpaperBinding.inflate(layoutInflater)
-        binding.apply {
-
-        }
+        fvtViewModel = ViewModelProvider(this)[FvtViewModel::class.java]
     }
 
     override fun onResume() {
         super.onResume()
         binding.apply {
-
-            rvFvt.adapter = FavoriteWallpaperAdapter(RoomDBInstance.roomDbInstance.dao().showAllWallpaper())
+            rvFvt.adapter = FavoriteWallpaperAdapter(fvtViewModel.showAllWallpaper())
             rvFvt.layoutManager = GridLayoutManager(requireContext(),2)
-
-            if (RoomDBInstance.roomDbInstance.dao().showAllWallpaper().isEmpty()){
+            if (fvtViewModel.isEmptyShowAllWallpaper()){
                 showState.visibility = View.VISIBLE
                 rvFvt.visibility = View.GONE
             }else {

@@ -22,18 +22,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.ActivityShowImageBinding
-import com.omid.glitterwall.db.RoomDBInstance
 import com.omid.glitterwall.models.models.AllVideo
 import java.io.File
 import java.io.IOException
 
 class ShowImageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowImageBinding
+    private lateinit var showImgViewModel: ShowImgViewModel
     private lateinit var allVideo: AllVideo
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -46,32 +47,34 @@ class ShowImageActivity : AppCompatActivity() {
     @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupBindingAndInitializeAllVideo()
+        getData()
+        setupBindingAndViewModel()
         clickEvent()
         savePhotoInDatabase()
     }
 
-    private fun setupBindingAndInitializeAllVideo() {
-        binding = ActivityShowImageBinding.inflate(layoutInflater)
+    private fun getData(){
+        allVideo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("allVideo", AllVideo::class.java)!!
+        } else {
+            intent.getParcelableExtra("allVideo")!!
+        }
+    }
+
+    private fun setupBindingAndViewModel() {
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        binding = ActivityShowImageBinding.inflate(layoutInflater)
         binding.apply {
             setContentView(root)
-            allVideo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra("allVideo", AllVideo::class.java)!!
-            } else {
-                intent.getParcelableExtra("allVideo")!!
-            }
-
+            showImgViewModel = ViewModelProvider(this@ShowImageActivity)[ShowImgViewModel::class.java]
             Glide.with(applicationContext)
                 .load(allVideo.videoThumbnailB)
                 .placeholder(R.drawable.coming)
                 .error(R.drawable.error2)
                 .into(img)
-
-
-            if (RoomDBInstance.roomDbInstance.dao().search(allVideo.id).isNotEmpty()) {
+            if (showImgViewModel.search(allVideo.id)){
                 Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
-            } else {
+            }else {
                 Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
             }
         }
@@ -93,14 +96,11 @@ class ShowImageActivity : AppCompatActivity() {
     private fun savePhotoInDatabase() {
         binding.apply {
             fvt.setOnClickListener {
-                if (RoomDBInstance.roomDbInstance.dao().search(allVideo.id).isNotEmpty()) {
-                    RoomDBInstance.roomDbInstance.dao().deleteGW(allVideo.id)
-                    Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
-
-                } else {
-                    RoomDBInstance.roomDbInstance.dao().insert(allVideo)
+                showImgViewModel.saveOrDelete(allVideo)
+                if (showImgViewModel.search(allVideo.id)){
                     Glide.with(applicationContext).load(R.drawable.favorite).into(fvt)
-
+                }else {
+                    Glide.with(applicationContext).load(R.drawable.favorite1).into(fvt)
                 }
             }
         }

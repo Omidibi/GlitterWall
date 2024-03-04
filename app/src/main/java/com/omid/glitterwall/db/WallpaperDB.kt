@@ -3,6 +3,7 @@ package com.omid.glitterwall.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+
 open class WallpaperDB(context: Context?) : SQLiteOpenHelper(context, "Wallpaper.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase?) {
         val query = "create table tbl_wallpaper(id Integer PRIMARY KEY AUTOINCREMENT,catId Text,categoryImage Text,categoryImageThumb Text," +

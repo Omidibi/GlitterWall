@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.ActivityMainBinding
@@ -16,6 +17,7 @@ import com.omid.glitterwall.ui.dashboard.home.HomeFragment
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var fragmentsList: MutableList<Fragment>
+    private lateinit var mainViewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBinding()
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             setContentView(root)
             setSupportActionBar(mainToolbar)
+            mainViewModel = ViewModelProvider(this@MainActivity)[MainViewModel::class.java]
         }
     }
 
@@ -42,7 +45,6 @@ class MainActivity : AppCompatActivity() {
             mainVp.adapter = FragmentTabAdapter(this@MainActivity, fragmentsList).apply {
                 mainVp.post { mainVp.setCurrentItem(0,false) }
             }
-            /** نگه داری فرگمنت ها در حافظه*/
             mainVp.offscreenPageLimit = fragmentsList.size
         }
     }
@@ -83,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             mainVp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    mainViewModel.currentPage.value = position
                     when (position) {
                         0 -> {
                             mainBnv.menu.findItem(R.id.home).isChecked = true

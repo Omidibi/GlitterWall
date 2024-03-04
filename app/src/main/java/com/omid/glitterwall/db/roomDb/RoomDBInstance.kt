@@ -1,4 +1,4 @@
-package com.omid.glitterwall.db
+package com.omid.glitterwall.db.roomDb
 
 import androidx.room.Room
 import com.omid.glitterwall.utils.configuration.AppConfiguration

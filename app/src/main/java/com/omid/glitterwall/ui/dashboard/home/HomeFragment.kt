@@ -1,45 +1,100 @@
 package com.omid.glitterwall.ui.dashboard.home
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
-import com.omid.glitterwall.api.WebServiceCaller
 import com.omid.glitterwall.databinding.FragmentHomeBinding
-import com.omid.glitterwall.models.listener.IListener
-import com.omid.glitterwall.models.models.Banner
-import com.omid.glitterwall.models.models.HomeWallpaper
 import com.omid.glitterwall.ui.customViews.customUI.CustomUI
-import retrofit2.Call
 import java.util.Timer
 import java.util.TimerTask
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private val webServiceCaller = WebServiceCaller()
+    private lateinit var owner: LifecycleOwner
+    private lateinit var homeViewModel: HomeViewModel
     private var currentPage = 0
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        owner = this
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupBinding()
-        latestWallpapers()
-        featuredWallpapers()
-        banner()
+        homeObservers()
         setupPagerBanner()
         srlStatusInFragment()
-
         return binding.root
     }
 
     private fun setupBinding() {
         binding = FragmentHomeBinding.inflate(layoutInflater)
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        CustomUI.customUI(this@HomeFragment, binding)
+    }
+
+    private fun homeObservers() {
         binding.apply {
-            CustomUI.customUI(this@HomeFragment, binding)
+            pbHome.visibility = View.VISIBLE
+            srl.visibility = View.GONE
+            nsv.visibility = View.GONE
+            homeViewModel.homeBanner.observe(viewLifecycleOwner) { banner ->
+                pbHome.visibility = View.GONE
+                srl.visibility = View.VISIBLE
+                nsv.visibility = View.VISIBLE
+                pagerBanner.adapter = BannerAdapter(banner.banner)
+            }
+            homeViewModel.errorBanner.observe(viewLifecycleOwner) { hasErrorBanner ->
+                if (hasErrorBanner) {
+                    pbHome.visibility = View.GONE
+                    srl.visibility = View.GONE
+                    nsv.visibility = View.GONE
+                    clNoConnection.visibility = View.VISIBLE
+                    btnTry.setOnClickListener {
+                        pbHome.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        nsv.visibility = View.GONE
+                        clNoConnection.visibility = View.GONE
+                        homeViewModel.getBanner()
+                        homeViewModel.getHomeWallpaper()
+                    }
+                }
+            }
+            homeViewModel.homeWallpaper.observe(viewLifecycleOwner) { homeWallpaper ->
+                pbHome.visibility = View.GONE
+                srl.visibility = View.VISIBLE
+                nsv.visibility = View.VISIBLE
+                rvLatest.adapter = LatestWallpapersAdapter(homeWallpaper.homeWallpaper.latestWallpaper)
+                rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                rvFeatured.adapter = FeaturedWallpapersAdapter(homeWallpaper.homeWallpaper.allWallpaper)
+                rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            }
+            homeViewModel.errorHomeWallpaper.observe(viewLifecycleOwner) { haseErrorHomeWallpaper ->
+                if (haseErrorHomeWallpaper){
+                    pbHome.visibility = View.GONE
+                    srl.visibility = View.GONE
+                    nsv.visibility = View.GONE
+                    clNoConnection.visibility = View.VISIBLE
+                    btnTry.setOnClickListener {
+                        pbHome.visibility = View.VISIBLE
+                        srl.visibility = View.GONE
+                        nsv.visibility = View.GONE
+                        clNoConnection.visibility = View.GONE
+                        homeViewModel.getBanner()
+                        homeViewModel.getHomeWallpaper()
+                    }
+                }
+            }
         }
     }
 
@@ -52,28 +107,20 @@ class HomeFragment : Fragment() {
                 }
                 pagerBanner.setCurrentItem(currentPage++, true)
             }
-            Timer().schedule(object : TimerTask() {
-                override fun run() {
-                    handler.post(update)
-                }
+            Timer().schedule(object : TimerTask() { override fun run() { handler.post(update) }
             }, 3000, 3000)
 
             pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    // این متد هر زمان که کاربر صفحه را می‌چرخاند فراخوانی می‌شود
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
                 }
 
                 override fun onPageSelected(position: Int) {
-                    // این متد هر زمان که یک صفحه جدید انتخاب می‌شود فراخوانی می‌شود
                     currentPage = position
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
-                    // این متد هر زمان که وضعیت پیمایش صفحه تغییر می‌کند فراخوانی می‌شود
+
                 }
             })
 
@@ -86,265 +133,19 @@ class HomeFragment : Fragment() {
     private fun srlStatusInFragment() {
         binding.apply {
             srl.setOnRefreshListener {
-                srlLatestWallpapers()
-                srlFeaturedWallpapers()
-                srlBanner()
+                srlObservers()
                 currentPage = 0
                 srl.isRefreshing = false
             }
         }
     }
 
-    private fun latestWallpapers() {
-        binding.apply {
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    if (isAdded) {
-                        pbHome.visibility = View.GONE
-                        srl.visibility = View.VISIBLE
-                        rvLatest.adapter = LatestWallpapersAdapter(response.homeWallpaper.latestWallpaper)
-                        rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        Log.e("", "")
-                    }
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    if (isAdded) {
-                        Log.e("", "")
-                        pbHome.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        clNoConnection.visibility = View.VISIBLE
-                        btnTry.setOnClickListener {
-                            tryAgainLatestWallpapers()
-                            tryAgainFeaturedWallpapers()
-                            tryAgainBanner()
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    private fun featuredWallpapers() {
-        binding.apply {
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    if (isAdded) {
-                        Log.e("", "")
-                        pbHome.visibility = View.GONE
-                        srl.visibility = View.VISIBLE
-                        rvFeatured.adapter = FeaturedWallpapersAdapter(response.homeWallpaper.allWallpaper)
-                        rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    }
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    if (isAdded) {
-                        Log.e("", "")
-                        pbHome.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        clNoConnection.visibility = View.VISIBLE
-                        btnTry.setOnClickListener {
-                            tryAgainLatestWallpapers()
-                            tryAgainFeaturedWallpapers()
-                            tryAgainBanner()
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    private fun banner() {
-        binding.apply {
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getBanner(object : IListener<Banner> {
-                override fun onSuccess(call: Call<Banner>, response: Banner) {
-                    if (isAdded) {
-                        Log.e("", "")
-                        pbHome.visibility = View.GONE
-                        srl.visibility = View.VISIBLE
-                        pagerBanner.adapter = BannerAdapter(response.banner)
-                    }
-                }
-
-                override fun onFailure(call: Call<Banner>, t: Throwable, errorResponse: String) {
-                    if (isAdded) {
-                        Log.e("", "")
-                        pbHome.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        clNoConnection.visibility = View.VISIBLE
-                        btnTry.setOnClickListener {
-                            tryAgainLatestWallpapers()
-                            tryAgainFeaturedWallpapers()
-                            tryAgainBanner()
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    private fun tryAgainLatestWallpapers() {
-        binding.apply {
-            clNoConnection.visibility = View.GONE
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    clNoConnection.visibility = View.GONE
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    nsv.visibility = View.VISIBLE
-                    rvLatest.adapter = LatestWallpapersAdapter(response.homeWallpaper.latestWallpaper)
-                    rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    Log.e("", "")
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
-    private fun tryAgainFeaturedWallpapers() {
-        binding.apply {
-            clNoConnection.visibility = View.GONE
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    clNoConnection.visibility = View.GONE
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(response.homeWallpaper.allWallpaper)
-                    rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
-    private fun tryAgainBanner() {
-        binding.apply {
-            clNoConnection.visibility = View.GONE
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            webServiceCaller.getBanner(object : IListener<Banner> {
-                override fun onSuccess(call: Call<Banner>, response: Banner) {
-                    Log.e("", "")
-                    clNoConnection.visibility = View.GONE
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    nsv.visibility = View.VISIBLE
-                    pagerBanner.adapter = BannerAdapter(response.banner)
-                }
-
-                override fun onFailure(call: Call<Banner>, t: Throwable, errorResponse: String) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
-    private fun srlLatestWallpapers() {
+    private fun srlObservers() {
         binding.apply {
             pbHome.visibility = View.VISIBLE
             nsv.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    pbHome.visibility = View.GONE
-                    nsv.visibility = View.VISIBLE
-                    rvLatest.adapter = LatestWallpapersAdapter(response.homeWallpaper.latestWallpaper)
-                    rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    Log.e("", "")
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    nsv.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
-                    }
-                }
-            })
-        }
-    }
-
-    private fun srlFeaturedWallpapers() {
-        binding.apply {
-            pbHome.visibility = View.VISIBLE
-            nsv.visibility = View.GONE
-            webServiceCaller.getHomeWallpaper(object : IListener<HomeWallpaper> {
-                override fun onSuccess(call: Call<HomeWallpaper>, response: HomeWallpaper) {
-                    Log.e("", "")
-                    pbHome.visibility = View.GONE
-                    nsv.visibility = View.VISIBLE
-                    rvFeatured.adapter = FeaturedWallpapersAdapter(response.homeWallpaper.allWallpaper)
-                    rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                }
-
-                override fun onFailure(call: Call<HomeWallpaper>, t: Throwable, errorResponse: String) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    nsv.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
-                    }
-                }
-            })
-        }
-    }
-
-    private fun srlBanner() {
-        binding.apply {
-            pbHome.visibility = View.VISIBLE
-            nsv.visibility = View.GONE
-            webServiceCaller.getBanner(object : IListener<Banner> {
-                override fun onSuccess(call: Call<Banner>, response: Banner) {
-                    Log.e("", "")
-                    pbHome.visibility = View.GONE
-                    nsv.visibility = View.VISIBLE
-                    pagerBanner.adapter = BannerAdapter(response.banner)
-                }
-
-                override fun onFailure(call: Call<Banner>, t: Throwable, errorResponse: String) {
-                    Log.e("", "")
-                    pbHome.visibility = View.VISIBLE
-                    nsv.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        tryAgainLatestWallpapers()
-                        tryAgainFeaturedWallpapers()
-                        tryAgainBanner()
-                    }
-                }
-            })
+            homeViewModel.getBanner()
+            homeViewModel.getHomeWallpaper()
         }
     }
 }

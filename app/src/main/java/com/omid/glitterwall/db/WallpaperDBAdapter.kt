@@ -1,10 +1,14 @@
 package com.omid.glitterwall.db
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import com.omid.glitterwall.models.models.AllVideo
 
 class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
 
-   /* fun insertWallpaper(allVideo: AllVideo): Long {
+    fun insertWallpaper(allVideo: AllVideo): Long {
         val db: SQLiteDatabase = writableDatabase
         val content: ContentValues = ContentValues()
         content.put("catId", allVideo.catId)
@@ -49,11 +53,11 @@ class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
             val videoTitle = cursor.getString(14)
             val videoType = cursor.getString(15)
             val videoUrl = cursor.getString(16)
-            wallpapers.add(
+            /*wallpapers.add(
                 AllVideo(catId, categoryImage, categoryImageThumb, categoryName, cid,
                     idWallpaper, rateAvg, totalViewer, videoDescription, videoDuration, videoId,
                     videoThumbnailB, videoThumbnailS, videoTitle, videoType, videoUrl)
-            )
+            )*/
         }
         return wallpapers
     }
@@ -86,12 +90,12 @@ class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
             val videoTitle = cursor.getString(14)
             val videoType = cursor.getString(15)
             val videoUrl = cursor.getString(16)
-            result.add(
+            /*result.add(
                 AllVideo(catId, categoryImage, categoryImageThumb, categoryName, cid,
                     idWallpaper, rateAvg, totalViewer, videoDescription, videoDuration, videoId,
                     videoThumbnailB, videoThumbnailS, videoTitle, videoType, videoUrl)
-            )
+            )*/
         }
         return result
-    }*/
+    }
 }
