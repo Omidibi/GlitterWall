@@ -1,40 +1,49 @@
 package com.omid.glitterwall.ui.dashboard.categories
 
-import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.omid.glitterwall.HomeWidget
 import com.omid.glitterwall.R
-import com.omid.glitterwall.activities.showImageByCatIdActivity.ShowImageByCatIdActivity
-import com.omid.glitterwall.models.models.Category
+import com.omid.glitterwall.models.Category
 import com.omid.glitterwall.utils.configuration.AppConfiguration
+import javax.inject.Inject
 
-class CategoriesAdapter(private val categoriesList : List<Category>): RecyclerView.Adapter<CategoriesVH>() {
+class CategoriesAdapter @Inject constructor(private val fragment: Fragment,private val categoryList: List<Category>) : RecyclerView.Adapter<CategoriesVH>() {
+
+    private lateinit var bundle: Bundle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesVH {
-       val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.category_row,null)
+        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.category_row, null)
         return CategoriesVH(view)
     }
 
     override fun getItemCount(): Int {
-      return categoriesList.size
+        return categoryList.size
     }
 
     override fun onBindViewHolder(holder: CategoriesVH, position: Int) {
         holder.apply {
-            val categoriesInfo = categoriesList[position]
+            val category = categoryList[position]
+            txtTitle.text = category.categoryName
+            bundle = Bundle()
+
             Glide.with(AppConfiguration.getContext())
-                .load(categoriesInfo.categoryImageThumb)
+                .load(category.categoryImageThumb)
                 .placeholder(R.drawable.coming)
                 .error(R.drawable.error2)
                 .into(imgCat)
-            txtTitle.text = categoriesInfo.categoryName
+
             cvCat.setOnClickListener {
-                val intent = Intent(AppConfiguration.getContext(), ShowImageByCatIdActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra("categoriesInfo",categoriesInfo)
-                AppConfiguration.getContext().startActivity(intent)
+                bundle.putParcelable("categoriesInfo",category)
+                fragment.findNavController().navigate(R.id.action_categoriesFragment_to_showImageByCatIdFragment,bundle)
+                HomeWidget.bnv.visibility = View.GONE
+                HomeWidget.toolbar.visibility = View.GONE
             }
         }
     }

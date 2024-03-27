@@ -1,9 +1,9 @@
-package com.omid.glitterwall.activities.showImageActivity
+package com.omid.glitterwall.fragments.showImageFragment
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.omid.glitterwall.db.roomDb.RoomDBInstance
-import com.omid.glitterwall.models.models.AllVideo
+import com.omid.glitterwall.models.AllVideo
 
 class ShowImgViewModel(application: Application) : AndroidViewModel(application) {
 

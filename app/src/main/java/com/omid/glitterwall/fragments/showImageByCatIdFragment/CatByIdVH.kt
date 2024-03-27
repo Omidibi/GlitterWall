@@ -1,4 +1,4 @@
-package com.omid.glitterwall.activities.showImageByCatIdActivity
+package com.omid.glitterwall.fragments.showImageByCatIdFragment
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView

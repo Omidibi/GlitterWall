@@ -1,4 +1,4 @@
-package com.omid.glitterwall.models.models
+package com.omid.glitterwall.models
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

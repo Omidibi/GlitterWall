@@ -26,7 +26,7 @@ class FavoriteWallpaperFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.apply {
-            rvFvt.adapter = FavoriteWallpaperAdapter(fvtViewModel.showAllWallpaper())
+            rvFvt.adapter = FavoriteWallpaperAdapter(this@FavoriteWallpaperFragment,fvtViewModel.showAllWallpaper())
             rvFvt.layoutManager = GridLayoutManager(requireContext(),2)
             if (fvtViewModel.isEmptyShowAllWallpaper()){
                 showState.visibility = View.VISIBLE

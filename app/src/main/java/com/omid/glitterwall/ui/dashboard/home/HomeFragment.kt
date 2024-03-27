@@ -1,7 +1,6 @@
 package com.omid.glitterwall.ui.dashboard.home
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,13 +14,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.omid.glitterwall.databinding.FragmentHomeBinding
 import com.omid.glitterwall.ui.customViews.customUI.CustomUI
+import com.omid.glitterwall.utils.internetLiveData.CheckNetworkConnection
+import com.omid.glitterwall.utils.networkAvailable.NetworkAvailable
 import java.util.Timer
 import java.util.TimerTask
 
 class HomeFragment : Fragment() {
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var owner: LifecycleOwner
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var checkNetworkConnection: CheckNetworkConnection
     private var currentPage = 0
 
     override fun onAttach(context: Context) {
@@ -31,8 +34,9 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupBinding()
-        homeObservers()
+        checkNetwork()
         setupPagerBanner()
+        homeObservers()
         srlStatusInFragment()
         return binding.root
     }
@@ -40,60 +44,22 @@ class HomeFragment : Fragment() {
     private fun setupBinding() {
         binding = FragmentHomeBinding.inflate(layoutInflater)
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        checkNetworkConnection = CheckNetworkConnection(requireActivity().application)
         CustomUI.customUI(this@HomeFragment, binding)
     }
 
-    private fun homeObservers() {
+    private fun checkNetwork(){
         binding.apply {
-            pbHome.visibility = View.VISIBLE
-            srl.visibility = View.GONE
-            nsv.visibility = View.GONE
-            homeViewModel.homeBanner.observe(viewLifecycleOwner) { banner ->
+            if (NetworkAvailable.isNetworkAvailable(requireContext())) {
                 pbHome.visibility = View.GONE
                 srl.visibility = View.VISIBLE
                 nsv.visibility = View.VISIBLE
-                pagerBanner.adapter = BannerAdapter(banner.banner)
-            }
-            homeViewModel.errorBanner.observe(viewLifecycleOwner) { hasErrorBanner ->
-                if (hasErrorBanner) {
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.GONE
-                    nsv.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        pbHome.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        nsv.visibility = View.GONE
-                        clNoConnection.visibility = View.GONE
-                        homeViewModel.getBanner()
-                        homeViewModel.getHomeWallpaper()
-                    }
-                }
-            }
-            homeViewModel.homeWallpaper.observe(viewLifecycleOwner) { homeWallpaper ->
+                liveNoConnection.visibility = View.GONE
+            }else {
                 pbHome.visibility = View.GONE
-                srl.visibility = View.VISIBLE
-                nsv.visibility = View.VISIBLE
-                rvLatest.adapter = LatestWallpapersAdapter(homeWallpaper.homeWallpaper.latestWallpaper)
-                rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                rvFeatured.adapter = FeaturedWallpapersAdapter(homeWallpaper.homeWallpaper.allWallpaper)
-                rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            }
-            homeViewModel.errorHomeWallpaper.observe(viewLifecycleOwner) { haseErrorHomeWallpaper ->
-                if (haseErrorHomeWallpaper){
-                    pbHome.visibility = View.GONE
-                    srl.visibility = View.GONE
-                    nsv.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTry.setOnClickListener {
-                        pbHome.visibility = View.VISIBLE
-                        srl.visibility = View.GONE
-                        nsv.visibility = View.GONE
-                        clNoConnection.visibility = View.GONE
-                        homeViewModel.getBanner()
-                        homeViewModel.getHomeWallpaper()
-                    }
-                }
+                srl.visibility = View.GONE
+                nsv.visibility = View.GONE
+                liveNoConnection.visibility = View.VISIBLE
             }
         }
     }
@@ -107,7 +73,10 @@ class HomeFragment : Fragment() {
                 }
                 pagerBanner.setCurrentItem(currentPage++, true)
             }
-            Timer().schedule(object : TimerTask() { override fun run() { handler.post(update) }
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    handler.post(update)
+                }
             }, 3000, 3000)
 
             pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -123,9 +92,40 @@ class HomeFragment : Fragment() {
 
                 }
             })
+            pageIndicatorView.elevation = 1000f
+        }
+    }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                pageIndicatorView.elevation = 1000f
+    private fun homeObservers() {
+        binding.apply {
+            checkNetworkConnection.observe(viewLifecycleOwner) { isConnect ->
+                if (isConnect) {
+                    srl.visibility = View.GONE
+                    nsv.visibility = View.GONE
+                    homeViewModel.homeBanner.observe(viewLifecycleOwner) { banner ->
+                        pbHome.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        nsv.visibility = View.VISIBLE
+                        liveNoConnection.visibility = View.GONE
+                        pagerBanner.adapter = BannerAdapter(banner.banner)
+                    }
+
+                    homeViewModel.homeWallpaper.observe(viewLifecycleOwner) { homeWallpaper ->
+                        pbHome.visibility = View.GONE
+                        srl.visibility = View.VISIBLE
+                        nsv.visibility = View.VISIBLE
+                        liveNoConnection.visibility = View.GONE
+                        rvLatest.adapter = LatestWallpapersAdapter(this@HomeFragment,homeWallpaper.homeWallpaper.latestWallpaper)
+                        rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        rvFeatured.adapter = FeaturedWallpapersAdapter(this@HomeFragment,homeWallpaper.homeWallpaper.allWallpaper)
+                        rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    }
+                } else {
+                    pbHome.visibility = View.GONE
+                    srl.visibility = View.GONE
+                    nsv.visibility = View.GONE
+                    liveNoConnection.visibility = View.VISIBLE
+                }
             }
         }
     }

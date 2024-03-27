@@ -1,66 +1,53 @@
 package com.omid.glitterwall.api
 
-import com.omid.glitterwall.models.models.Banner
-import com.omid.glitterwall.models.models.CatByIdList
-import com.omid.glitterwall.models.models.Categories
-import com.omid.glitterwall.models.models.HomeWallpaper
-import com.omid.glitterwall.models.listener.IListener
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import androidx.lifecycle.MutableLiveData
+import com.omid.glitterwall.models.Banner
+import com.omid.glitterwall.models.CatByIdList
+import com.omid.glitterwall.models.Categories
+import com.omid.glitterwall.models.HomeWallpaper
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class WebServiceCaller {
+
     private val iService = ApiRetrofit.retrofit.create(IService::class.java)
+    val catById = MutableLiveData<CatByIdList>()
+    val category = MutableLiveData<Categories>()
 
-    fun getCatById(categoryId: String, iListener: IListener<CatByIdList>) {
-        iService.wallByCatId(categoryId).enqueue(object : Callback<CatByIdList> {
-            override fun onResponse(call: Call<CatByIdList>, response: Response<CatByIdList>) {
-                iListener.onSuccess(call, response.body()!!)
-            }
+    fun getCatById(categoryId: String) {
+        CompositeDisposable().apply {
+            val disposable = iService.wallByCatId(categoryId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ catByIdList ->
+                    catById.postValue(catByIdList)
+                }, { error ->
 
-            override fun onFailure(call: Call<CatByIdList>, t: Throwable) {
-                iListener.onFailure(call, t, "Error")
-            }
-
-        })
+                })
+            this.add(disposable)
+        }
     }
 
-    fun getCategoryList(iListener: IListener<Categories>) {
-        iService.categoriesList().enqueue(object : Callback<Categories> {
-            override fun onResponse(call: Call<Categories>, response: Response<Categories>) {
-                iListener.onSuccess(call, response.body()!!)
-            }
+    fun getCategoryList() {
+        CompositeDisposable().apply {
+            val disposable = iService.categoriesList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ categories ->
+                    category.postValue(categories)
+                }, { error ->
 
-            override fun onFailure(call: Call<Categories>, t: Throwable) {
-                iListener.onFailure(call, t, "Error")
-            }
-
-        })
+                })
+            this.add(disposable)
+        }
     }
 
-    fun getHomeWallpaper(iListener: IListener<HomeWallpaper>) {
-        iService.home().enqueue(object : Callback<HomeWallpaper> {
-            override fun onResponse(call: Call<HomeWallpaper>, response: Response<HomeWallpaper>) {
-                iListener.onSuccess(call, response.body()!!)
-            }
-
-            override fun onFailure(call: Call<HomeWallpaper>, t: Throwable) {
-                iListener.onFailure(call, t, "Error")
-            }
-
-        })
+    suspend fun getHomeWallpaper(): HomeWallpaper? {
+        iService.home().apply { return if (this.isSuccessful) this.body() else null }
     }
 
-    fun getBanner(iListener: IListener<Banner>) {
-        iService.banner().enqueue(object : Callback<Banner> {
-            override fun onResponse(call: Call<Banner>, response: Response<Banner>) {
-                iListener.onSuccess(call, response.body()!!)
-            }
-
-            override fun onFailure(call: Call<Banner>, t: Throwable) {
-                iListener.onFailure(call, t, "Error")
-            }
-
-        })
+    suspend fun getBanner(): Banner? {
+        iService.banner().apply { return if (this.isSuccessful) this.body() else null }
     }
 }

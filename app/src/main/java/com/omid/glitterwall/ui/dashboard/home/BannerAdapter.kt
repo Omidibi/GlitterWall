@@ -7,7 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.omid.glitterwall.R
-import com.omid.glitterwall.models.models.BannerModel
+import com.omid.glitterwall.models.BannerModel
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
 class BannerAdapter(private var bannerList: List<BannerModel>) : PagerAdapter() {

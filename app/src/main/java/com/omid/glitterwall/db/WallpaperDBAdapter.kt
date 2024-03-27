@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import com.omid.glitterwall.models.models.AllVideo
+import com.omid.glitterwall.models.AllVideo
 
 class WallpaperDBAdapter(context: Context) : WallpaperDB(context) {
 

@@ -214,7 +214,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_no_connection"
+        android:id="@+id/live_no_connection"
         android:layout_width="@dimen/_0dp"
         android:layout_height="@dimen/_0dp"
         android:background="@color/white"
@@ -225,44 +225,27 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/pic_no_connection"
+            android:id="@+id/live_pic_no_connection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_150dp"
             android:src="@drawable/no_connection"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.omid.glitterwall.ui.customViews.customFonts.IranSansTextView
-            android:id="@+id/txt_en"
+            android:id="@+id/live_txt_en"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_50dp"
+            android:layout_marginTop="@dimen/_30dp"
             android:text="@string/no_internet_connection"
             android:textColor="@color/BlueWhale"
             android:textSize="@dimen/_17sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pic_no_connection" />
-
-        <com.omid.glitterwall.ui.customViews.customFonts.IranSansButton
-            android:id="@+id/btn_try"
-            android:layout_width="@dimen/_180dp"
-            android:layout_height="@dimen/_70dp"
-            android:layout_marginTop="@dimen/_50dp"
-            android:background="@drawable/btn_try_shape"
-            android:lineSpacingExtra="@dimen/_5dp"
-            android:text="@string/try_again"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_en"
-
-            />
+            app:layout_constraintTop_toBottomOf="@+id/live_pic_no_connection" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.omid.glitterwall.models.models.AllVideo
+import com.omid.glitterwall.models.AllVideo
 
 @Dao
 interface IDao {

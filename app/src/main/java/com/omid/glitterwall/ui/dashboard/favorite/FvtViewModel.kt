@@ -3,7 +3,7 @@ package com.omid.glitterwall.ui.dashboard.favorite
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.omid.glitterwall.db.roomDb.RoomDBInstance
-import com.omid.glitterwall.models.models.AllVideo
+import com.omid.glitterwall.models.AllVideo
 
 class FvtViewModel(application: Application) : AndroidViewModel(application) {
 

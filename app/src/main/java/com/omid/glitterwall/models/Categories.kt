@@ -1,11 +1,11 @@
-package com.omid.glitterwall.models.models
+package com.omid.glitterwall.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class LatestWallpapers(
+data class Categories(
     @SerializedName("ALL_IN_ONE_VIDEO")
-    val latestWallpapers: List<AllVideo>
+    val categories: List<Category>
 ) : Parcelable

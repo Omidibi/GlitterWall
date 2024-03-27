@@ -1,11 +1,11 @@
-package com.omid.glitterwall.models.models
+package com.omid.glitterwall.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class HomeWallpaper(
+data class Banner(
     @SerializedName("ALL_IN_ONE_VIDEO")
-    val homeWallpaper: Home
+    val banner: List<BannerModel>
 ) : Parcelable

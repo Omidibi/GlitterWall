@@ -2,34 +2,28 @@ package com.omid.glitterwall.ui.dashboard.categories
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import com.omid.glitterwall.api.WebServiceCaller
-import com.omid.glitterwall.models.listener.IListener
-import com.omid.glitterwall.models.models.Categories
-import retrofit2.Call
+import com.omid.glitterwall.models.Categories
+import com.omid.glitterwall.utils.internetLiveData.CheckNetworkConnection
 
 class CategoriesViewModel(application: Application) : AndroidViewModel(application) {
 
     private val webServiceCaller = WebServiceCaller()
-    val errorCategories = MutableLiveData<Boolean>()
-    val category = MutableLiveData<Categories>()
+    private val networkConnection = CheckNetworkConnection(application)
+    val category: LiveData<Categories> = webServiceCaller.category
 
     init {
-        getCategoryList()
+        networkConnection.observeForever { isConnect ->
+            if (isConnect) {
+                getCategoryList()
+            }
+        }
     }
 
     fun getCategoryList() {
-        webServiceCaller.getCategoryList(object : IListener<Categories> {
-            override fun onSuccess(call: Call<Categories>, response: Categories) {
-                category.postValue(response)
-                errorCategories.postValue(false)
-
-            }
-
-            override fun onFailure(call: Call<Categories>, t: Throwable, errorResponse: String) {
-                errorCategories.postValue(true)
-            }
-
-        })
+        if (networkConnection.value == true) {
+            webServiceCaller.getCategoryList()
+        }
     }
 }
