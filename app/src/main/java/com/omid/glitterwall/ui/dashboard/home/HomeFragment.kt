@@ -107,9 +107,11 @@ class HomeFragment : Fragment() {
     private fun homeObservers() {
         binding.apply {
             checkNetworkConnection.observe(viewLifecycleOwner) { isConnect ->
+                pbHome.visibility = View.VISIBLE
+                srl.visibility = View.GONE
+                nsv.visibility = View.GONE
+                liveNoConnection.visibility = View.GONE
                 if (isConnect) {
-                    srl.visibility = View.GONE
-                    nsv.visibility = View.GONE
                     homeViewModel.homeBanner.observe(viewLifecycleOwner) { banner ->
                         pbHome.visibility = View.GONE
                         srl.visibility = View.VISIBLE

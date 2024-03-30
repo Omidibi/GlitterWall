@@ -64,6 +64,10 @@ class CategoriesFragment : Fragment() {
     private fun setupObservers() {
         binding.apply {
             checkNetworkConnection.observe(viewLifecycleOwner) { isConnect ->
+                pbCat.visibility = View.VISIBLE
+                srl.visibility = View.GONE
+                rvCategories.visibility = View.GONE
+                liveNoConnection.visibility = View.GONE
                 if (isConnect) {
                     categoriesViewModel.category.observe(viewLifecycleOwner) { categories ->
                         pbCat.visibility = View.GONE

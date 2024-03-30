@@ -79,10 +79,10 @@ class ShowImageByCatIdFragment : Fragment() {
     private fun setupObservers() {
         binding.apply {
             checkNetworkConnection.observe(viewLifecycleOwner) { isConnect ->
+                pb.visibility = View.VISIBLE
+                srl.visibility = View.GONE
+                liveClNoConnection.visibility = View.GONE
                 if (isConnect) {
-                    pb.visibility = View.VISIBLE
-                    srl.visibility = View.GONE
-                    liveClNoConnection.visibility = View.GONE
                     imgCatIdViewModel.catById.observe(viewLifecycleOwner) { catByIdList ->
                         pb.visibility = View.GONE
                         srl.visibility = View.VISIBLE
