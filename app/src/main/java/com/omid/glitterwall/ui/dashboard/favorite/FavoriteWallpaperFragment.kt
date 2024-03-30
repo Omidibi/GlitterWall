@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.omid.glitterwall.databinding.FragmentFavoriteWallpaperBinding
 
 class FavoriteWallpaperFragment : Fragment() {
+
     private lateinit var binding: FragmentFavoriteWallpaperBinding
     private lateinit var fvtViewModel: FvtViewModel
 
@@ -26,12 +27,12 @@ class FavoriteWallpaperFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.apply {
-            rvFvt.adapter = FavoriteWallpaperAdapter(this@FavoriteWallpaperFragment,fvtViewModel.showAllWallpaper())
-            rvFvt.layoutManager = GridLayoutManager(requireContext(),2)
-            if (fvtViewModel.isEmptyShowAllWallpaper()){
+            rvFvt.adapter = FavoriteWallpaperAdapter(this@FavoriteWallpaperFragment, fvtViewModel.showAllWallpaper())
+            rvFvt.layoutManager = GridLayoutManager(requireContext(), 2)
+            if (fvtViewModel.isEmptyShowAllWallpaper()) {
                 showState.visibility = View.VISIBLE
                 rvFvt.visibility = View.GONE
-            }else {
+            } else {
                 showState.visibility = View.GONE
                 rvFvt.visibility = View.VISIBLE
             }

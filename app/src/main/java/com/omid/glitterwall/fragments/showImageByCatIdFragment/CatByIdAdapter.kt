@@ -18,7 +18,7 @@ class CatByIdAdapter(private val fragment: Fragment, private val categoriesModel
     private lateinit var bundle: Bundle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatByIdVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.cat_by_id_row,null)
+        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.cat_by_id_row, null)
         return CatByIdVH(view)
     }
 
@@ -38,8 +38,8 @@ class CatByIdAdapter(private val fragment: Fragment, private val categoriesModel
                 .into(img)
 
             cvCat.setOnClickListener {
-                bundle.putParcelable("allVideo",categoriesModelInfo)
-                fragment.findNavController().navigate(R.id.action_showImageByCatIdFragment3_to_showImageFragment,bundle)
+                bundle.putParcelable("allVideo", categoriesModelInfo)
+                fragment.findNavController().navigate(R.id.action_showImageByCatIdFragment3_to_showImageFragment, bundle)
                 HomeWidget.bnv.visibility = View.GONE
                 HomeWidget.toolbar.visibility = View.GONE
             }

@@ -24,9 +24,7 @@
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.omid.glitterwall.ui.customViews.customFonts.IranSansTextView
                 android:id="@+id/txt_title"

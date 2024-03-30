@@ -11,6 +11,7 @@ import com.omid.glitterwall.models.BannerModel
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
 class BannerAdapter(private var bannerList: List<BannerModel>) : PagerAdapter() {
+
     override fun getCount(): Int {
         return bannerList.size
     }

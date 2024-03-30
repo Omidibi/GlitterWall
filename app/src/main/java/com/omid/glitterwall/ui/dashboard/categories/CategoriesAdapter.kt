@@ -14,7 +14,7 @@ import com.omid.glitterwall.models.Category
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 import javax.inject.Inject
 
-class CategoriesAdapter @Inject constructor(private val fragment: Fragment,private val categoryList: List<Category>) : RecyclerView.Adapter<CategoriesVH>() {
+class CategoriesAdapter @Inject constructor(private val fragment: Fragment, private val categoryList: List<Category>) : RecyclerView.Adapter<CategoriesVH>() {
 
     private lateinit var bundle: Bundle
 
@@ -40,8 +40,8 @@ class CategoriesAdapter @Inject constructor(private val fragment: Fragment,priva
                 .into(imgCat)
 
             cvCat.setOnClickListener {
-                bundle.putParcelable("categoriesInfo",category)
-                fragment.findNavController().navigate(R.id.action_categoriesFragment_to_showImageByCatIdFragment,bundle)
+                bundle.putParcelable("categoriesInfo", category)
+                fragment.findNavController().navigate(R.id.action_categoriesFragment_to_showImageByCatIdFragment, bundle)
                 HomeWidget.bnv.visibility = View.GONE
                 HomeWidget.toolbar.visibility = View.GONE
             }

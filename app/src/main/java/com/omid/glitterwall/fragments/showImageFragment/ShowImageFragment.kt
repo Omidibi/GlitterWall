@@ -39,6 +39,7 @@ import java.io.File
 import java.io.IOException
 
 class ShowImageFragment : Fragment() {
+
     private lateinit var binding: FragmentShowImageBinding
     private lateinit var showImgViewModel: ShowImgViewModel
     private lateinit var allVideo: AllVideo
@@ -63,7 +64,7 @@ class ShowImageFragment : Fragment() {
         savePhotoInDatabase()
     }
 
-    private fun getData(){
+    private fun getData() {
         allVideo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable("allVideo", AllVideo::class.java)!!
         } else {
@@ -81,9 +82,9 @@ class ShowImageFragment : Fragment() {
                 .placeholder(R.drawable.coming)
                 .error(R.drawable.error2)
                 .into(img)
-            if (showImgViewModel.search(allVideo.id)){
+            if (showImgViewModel.search(allVideo.id)) {
                 Glide.with(requireContext()).load(R.drawable.favorite).into(fvt)
-            }else {
+            } else {
                 Glide.with(requireContext()).load(R.drawable.favorite1).into(fvt)
             }
         }
@@ -113,9 +114,9 @@ class ShowImageFragment : Fragment() {
         binding.apply {
             fvt.setOnClickListener {
                 showImgViewModel.saveOrDelete(allVideo)
-                if (showImgViewModel.search(allVideo.id)){
+                if (showImgViewModel.search(allVideo.id)) {
                     Glide.with(requireContext()).load(R.drawable.favorite).into(fvt)
-                }else {
+                } else {
                     Glide.with(requireContext()).load(R.drawable.favorite1).into(fvt)
                 }
             }
@@ -295,7 +296,10 @@ class ShowImageFragment : Fragment() {
 
             /**گرفتن آدرس عکس دانلود شده ی موجود در حافظه */
             val file =
-                File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "${allVideo.id}.jpg")
+                File(
+                    requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "${allVideo.id}.jpg"
+                )
             /**چک کردن موجودی همچین فایلی در حاغظه */
             if (file.exists()) {
                 /**دادن فایل به متد decodeFile در صورت بودن */

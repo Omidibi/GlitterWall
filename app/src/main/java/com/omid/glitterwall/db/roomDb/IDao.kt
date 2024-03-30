@@ -23,5 +23,4 @@ interface IDao {
 
     @Query("Select * From tbl_glitterWall Where id Like :id")
     fun search(id: String): MutableList<AllVideo>
-
 }

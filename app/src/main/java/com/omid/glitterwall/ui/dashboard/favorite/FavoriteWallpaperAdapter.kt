@@ -13,7 +13,7 @@ import com.omid.glitterwall.R
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
-class FavoriteWallpaperAdapter(private val fragment: Fragment,private val fvtList: MutableList<AllVideo>): RecyclerView.Adapter<FvtWallpaperVH>() {
+class FavoriteWallpaperAdapter(private val fragment: Fragment, private val fvtList: MutableList<AllVideo>) : RecyclerView.Adapter<FvtWallpaperVH>() {
 
     private lateinit var bundle: Bundle
 
@@ -38,8 +38,8 @@ class FavoriteWallpaperAdapter(private val fragment: Fragment,private val fvtLis
                 .into(img)
 
             cvFvt.setOnClickListener {
-                bundle.putParcelable("allVideo",fvtInfo)
-                fragment.findNavController().navigate(R.id.action_favoriteWallpaperFragment_to_showImageFragment,bundle)
+                bundle.putParcelable("allVideo", fvtInfo)
+                fragment.findNavController().navigate(R.id.action_favoriteWallpaperFragment_to_showImageFragment, bundle)
                 HomeWidget.bnv.visibility = View.GONE
                 HomeWidget.toolbar.visibility = View.GONE
             }

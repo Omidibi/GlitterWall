@@ -60,10 +60,9 @@ class ShowImageByCatIdFragment : Fragment() {
         imgCatIdViewModel = ViewModelProvider(this@ShowImageByCatIdFragment)[ImgCatIdViewModel::class.java]
         owner = this@ShowImageByCatIdFragment
         checkNetworkConnection = CheckNetworkConnection(requireActivity().application)
-
     }
 
-    private fun networkAvailable(){
+    private fun networkAvailable() {
         binding.apply {
             if (NetworkAvailable.isNetworkAvailable(requireContext())) {
                 pb.visibility = View.GONE
@@ -88,7 +87,7 @@ class ShowImageByCatIdFragment : Fragment() {
                         pb.visibility = View.GONE
                         srl.visibility = View.VISIBLE
                         liveClNoConnection.visibility = View.GONE
-                        rvCatById.adapter = CatByIdAdapter(this@ShowImageByCatIdFragment,catByIdList.catByIdList)
+                        rvCatById.adapter = CatByIdAdapter(this@ShowImageByCatIdFragment, catByIdList.catByIdList)
                         rvCatById.layoutManager = GridLayoutManager(requireContext(), 2)
                     }
                 } else {
@@ -97,7 +96,6 @@ class ShowImageByCatIdFragment : Fragment() {
                     liveClNoConnection.visibility = View.VISIBLE
                 }
             }
-
         }
     }
 
@@ -110,7 +108,7 @@ class ShowImageByCatIdFragment : Fragment() {
         }
     }
 
-    private fun clickEvents(){
+    private fun clickEvents() {
         binding.apply {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
                 findNavController().popBackStack()
@@ -120,7 +118,7 @@ class ShowImageByCatIdFragment : Fragment() {
         }
     }
 
-    private fun setWidget(){
+    private fun setWidget() {
         if (HomeWidget.bnv.visibility == View.VISIBLE) {
             HomeWidget.bnv.visibility = View.GONE
         }

@@ -20,7 +20,7 @@ class CategoriesFragment : Fragment() {
     private lateinit var binding: FragmentCategoriesBinding
     private lateinit var owner: LifecycleOwner
     private lateinit var categoriesViewModel: CategoriesViewModel
-    private lateinit var checkNetworkConnection : CheckNetworkConnection
+    private lateinit var checkNetworkConnection: CheckNetworkConnection
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -29,10 +29,14 @@ class CategoriesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupBinding()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         checkNetwork()
         setupObservers()
         srlStatusInFragment()
-        return binding.root
     }
 
     private fun setupBinding() {
@@ -41,14 +45,14 @@ class CategoriesFragment : Fragment() {
         checkNetworkConnection = CheckNetworkConnection(requireActivity().application)
     }
 
-    private fun checkNetwork(){
+    private fun checkNetwork() {
         binding.apply {
             if (NetworkAvailable.isNetworkAvailable(requireContext())) {
                 pbCat.visibility = View.GONE
                 srl.visibility = View.VISIBLE
                 rvCategories.visibility = View.VISIBLE
                 liveNoConnection.visibility = View.GONE
-            }else {
+            } else {
                 pbCat.visibility = View.GONE
                 srl.visibility = View.GONE
                 rvCategories.visibility = View.GONE
@@ -66,7 +70,7 @@ class CategoriesFragment : Fragment() {
                         srl.visibility = View.VISIBLE
                         rvCategories.visibility = View.VISIBLE
                         liveNoConnection.visibility = View.GONE
-                        rvCategories.adapter = CategoriesAdapter(this@CategoriesFragment,categories.categories)
+                        rvCategories.adapter = CategoriesAdapter(this@CategoriesFragment, categories.categories)
                         rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
                     }
                 } else {

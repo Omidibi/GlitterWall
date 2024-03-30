@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
 class IranSansTextView : AppCompatTextView {
+
     constructor(context: Context?) : super(context!!) {
         extracted()
     }
@@ -20,7 +21,8 @@ class IranSansTextView : AppCompatTextView {
     }
 
     private fun extracted() {
-        val typeface = Typeface.createFromAsset(AppConfiguration.getContext().assets, "Fonts/IRANSans/iran_sans_mobile.ttf")
-        setTypeface(typeface)
+        Typeface.createFromAsset(AppConfiguration.getContext().assets, "Fonts/IRANSans/iran_sans_mobile.ttf").apply {
+            setTypeface(this@apply)
+        }
     }
 }

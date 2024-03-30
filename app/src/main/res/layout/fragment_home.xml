@@ -16,9 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl"
@@ -72,9 +70,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-
-                                />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.rd.PageIndicatorView
                                 android:id="@+id/pageIndicatorView"
@@ -142,9 +138,7 @@
                             android:layout_margin="@dimen/_4dp"
                             android:text="@string/latest"
                             android:textSize="@dimen/_25sp"
-                            android:textStyle="bold"
-
-                            />
+                            android:textStyle="bold" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -158,9 +152,7 @@
                     android:background="@color/Solitude"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_latest"
-
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/ll_latest" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_featuredWallpaper"
@@ -187,9 +179,7 @@
                             android:layout_margin="@dimen/_4dp"
                             android:text="@string/featured"
                             android:textSize="@dimen/_25sp"
-                            android:textStyle="bold"
-
-                            />
+                            android:textStyle="bold" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -203,9 +193,7 @@
                     android:background="@color/Solitude"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_featuredWallpaper"
-
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/ll_featuredWallpaper" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

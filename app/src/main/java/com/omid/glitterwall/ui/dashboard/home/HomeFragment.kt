@@ -34,11 +34,15 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupBinding()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         checkNetwork()
         setupPagerBanner()
         homeObservers()
         srlStatusInFragment()
-        return binding.root
     }
 
     private fun setupBinding() {
@@ -48,14 +52,14 @@ class HomeFragment : Fragment() {
         CustomUI.customUI(this@HomeFragment, binding)
     }
 
-    private fun checkNetwork(){
+    private fun checkNetwork() {
         binding.apply {
             if (NetworkAvailable.isNetworkAvailable(requireContext())) {
                 pbHome.visibility = View.GONE
                 srl.visibility = View.VISIBLE
                 nsv.visibility = View.VISIBLE
                 liveNoConnection.visibility = View.GONE
-            }else {
+            } else {
                 pbHome.visibility = View.GONE
                 srl.visibility = View.GONE
                 nsv.visibility = View.GONE
@@ -80,7 +84,11 @@ class HomeFragment : Fragment() {
             }, 3000, 3000)
 
             pagerBanner.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
 
                 }
 
@@ -115,9 +123,9 @@ class HomeFragment : Fragment() {
                         srl.visibility = View.VISIBLE
                         nsv.visibility = View.VISIBLE
                         liveNoConnection.visibility = View.GONE
-                        rvLatest.adapter = LatestWallpapersAdapter(this@HomeFragment,homeWallpaper.homeWallpaper.latestWallpaper)
+                        rvLatest.adapter = LatestWallpapersAdapter(this@HomeFragment, homeWallpaper.homeWallpaper.latestWallpaper)
                         rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        rvFeatured.adapter = FeaturedWallpapersAdapter(this@HomeFragment,homeWallpaper.homeWallpaper.allWallpaper)
+                        rvFeatured.adapter = FeaturedWallpapersAdapter(this@HomeFragment, homeWallpaper.homeWallpaper.allWallpaper)
                         rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     }
                 } else {
@@ -125,6 +133,7 @@ class HomeFragment : Fragment() {
                     srl.visibility = View.GONE
                     nsv.visibility = View.GONE
                     liveNoConnection.visibility = View.VISIBLE
+                    currentPage = 0
                 }
             }
         }

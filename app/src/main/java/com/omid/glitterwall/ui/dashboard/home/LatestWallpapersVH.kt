@@ -6,7 +6,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.omid.glitterwall.R
 
-class LatestWallpapersVH(itemView: View) : RecyclerView.ViewHolder(itemView){
+class LatestWallpapersVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
     val cvImg = itemView.findViewById<CardView>(R.id.cv_img)!!
 }

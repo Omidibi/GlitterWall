@@ -28,17 +28,21 @@ android {
                 )
             }
         }
+
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_1_8
             targetCompatibility = JavaVersion.VERSION_1_8
         }
+
         kotlinOptions {
             jvmTarget = "1.8"
         }
+
         buildFeatures {
             viewBinding = true
             dataBinding = true
         }
+
         kapt {
             correctErrorTypes = true
         }
@@ -71,13 +75,13 @@ android {
         implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-        implementation ("io.reactivex.rxjava3:rxandroid:3.0.2")
-        implementation ("io.reactivex.rxjava3:rxjava:3.1.5")
-        implementation ("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
+        implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+        implementation("io.reactivex.rxjava3:rxjava:3.1.5")
+        implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
         val navVersion = "2.7.7"
         implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
         implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
-         /*implementation("com.google.dagger:dagger-android:2.48.1")
-         kapt("com.google.dagger:dagger-compiler:2.48.1")*/
+        /*implementation("com.google.dagger:dagger-android:2.48.1")
+        kapt("com.google.dagger:dagger-compiler:2.48.1")*/
     }
 }

@@ -7,13 +7,13 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_img"
         android:layout_width="@dimen/_220dp"
-        app:cardElevation="@dimen/_8dp"
         android:layout_height="@dimen/_320dp"
         android:layout_marginStart="@dimen/_6dp"
-        android:layout_marginEnd="@dimen/_6dp"
         android:layout_marginTop="@dimen/_2dp"
+        android:layout_marginEnd="@dimen/_6dp"
         android:layout_marginBottom="@dimen/_2dp"
-        app:cardCornerRadius="@dimen/_10dp">
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardElevation="@dimen/_8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
