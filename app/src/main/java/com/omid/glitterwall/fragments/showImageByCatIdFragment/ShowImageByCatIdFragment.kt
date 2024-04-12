@@ -60,7 +60,6 @@ class ShowImageByCatIdFragment : Fragment() {
         } else {
             requireArguments().getParcelable("categoriesInfo")!!
         }
-        CId.cId = catById.cid
     }
 
     private fun setupBindingAndViewModel() {
@@ -93,7 +92,7 @@ class ShowImageByCatIdFragment : Fragment() {
             if (!HomeWidget.isDataLoaded) {
                 checkNetworkConnection.observe(owner) { isConnect ->
                     if (isConnect) {
-                        imgCatIdViewModel.getImgByCatId().observe(owner) {
+                        imgCatIdViewModel.getImgByCatId(catById.cid).observe(owner) {
                             dataISReady = mutableListOf()
                             dataISReady = it.catByIdList
                             pb.visibility = View.GONE

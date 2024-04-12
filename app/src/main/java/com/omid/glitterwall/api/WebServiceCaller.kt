@@ -1,5 +1,6 @@
 package com.omid.glitterwall.api
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.omid.glitterwall.models.Banner
 import com.omid.glitterwall.models.CatByIdList
@@ -23,7 +24,7 @@ class WebServiceCaller {
                 .subscribe({ catByIdList ->
                     catById.postValue(catByIdList)
                 }, { error ->
-
+                    Log.e("",error.message.toString())
                 })
             this.add(disposable)
         }
@@ -37,7 +38,7 @@ class WebServiceCaller {
                 .subscribe({ categories ->
                     category.postValue(categories)
                 }, { error ->
-
+                    Log.e("",error.message.toString())
                 })
             this.add(disposable)
         }

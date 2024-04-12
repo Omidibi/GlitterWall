@@ -11,8 +11,8 @@ class ImgCatIdViewModel(application: Application) : AndroidViewModel(application
     private val webServiceCaller = WebServiceCaller()
     private var catById: MutableLiveData<CatByIdList> = webServiceCaller.catById
 
-    fun getImgByCatId(): MutableLiveData<CatByIdList> {
-        CId.cId?.let { webServiceCaller.getCatById(it) }
+    fun getImgByCatId(categoryId: String): MutableLiveData<CatByIdList> {
+        webServiceCaller.getCatById(categoryId)
         return catById
     }
 }
