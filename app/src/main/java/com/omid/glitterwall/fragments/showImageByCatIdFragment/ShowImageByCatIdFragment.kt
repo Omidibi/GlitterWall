@@ -13,7 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.omid.glitterwall.HomeWidget
+import com.omid.glitterwall.activity.HomeWidget
 import com.omid.glitterwall.databinding.FragmentShowImageByCatIdBinding
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.models.Category

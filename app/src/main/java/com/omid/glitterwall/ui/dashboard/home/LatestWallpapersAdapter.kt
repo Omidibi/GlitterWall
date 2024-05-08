@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.omid.glitterwall.HomeWidget
+import com.omid.glitterwall.activity.HomeWidget
 import com.omid.glitterwall.R
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration

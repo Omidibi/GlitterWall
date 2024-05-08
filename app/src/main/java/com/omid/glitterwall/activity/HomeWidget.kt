@@ -1,4 +1,4 @@
-package com.omid.glitterwall
+package com.omid.glitterwall.activity
 
 import android.annotation.SuppressLint
 import com.google.android.material.bottomnavigation.BottomNavigationView

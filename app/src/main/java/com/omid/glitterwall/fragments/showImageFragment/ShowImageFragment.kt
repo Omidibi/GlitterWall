@@ -31,7 +31,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.omid.glitterwall.HomeWidget
+import com.omid.glitterwall.activity.HomeWidget
 import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.FragmentShowImageBinding
 import com.omid.glitterwall.models.AllVideo

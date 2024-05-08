@@ -1,4 +1,4 @@
-package com.omid.glitterwall
+package com.omid.glitterwall.activity
 
 import android.content.pm.ActivityInfo
 import android.content.res.ColorStateList
@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.omid.glitterwall.R
 import com.omid.glitterwall.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
