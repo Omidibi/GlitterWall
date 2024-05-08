@@ -98,7 +98,6 @@ class ShowImageFragment : Fragment() {
                 findNavController().popBackStack()
                 HomeWidget.bnv.visibility = View.VISIBLE
                 HomeWidget.toolbar.visibility = View.VISIBLE
-                HomeWidget.isDataLoaded = true
             }
 
             btnDownload.setOnClickListener {

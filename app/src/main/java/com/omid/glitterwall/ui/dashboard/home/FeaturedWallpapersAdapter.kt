@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -13,13 +15,17 @@ import com.omid.glitterwall.R
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
-class FeaturedWallpapersAdapter(private val fragment: Fragment, private val featuredList : List<AllVideo>) : RecyclerView.Adapter<FeaturedVH>() {
+class FeaturedWallpapersAdapter(private val fragment: Fragment, private val featuredList: List<AllVideo>) : RecyclerView.Adapter<FeaturedWallpapersAdapter.FeaturedVH>() {
 
-    private lateinit var bundle: Bundle
+    inner class FeaturedVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvImg = itemView.findViewById<CardView>(R.id.cv_img)!!
+        val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
+    }
+
+    private val bundle = Bundle()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.featured_row,null)
-        return FeaturedVH(view)
+        return FeaturedVH(LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.featured_row, null))
     }
 
     override fun getItemCount(): Int {
@@ -29,8 +35,6 @@ class FeaturedWallpapersAdapter(private val fragment: Fragment, private val feat
     override fun onBindViewHolder(holder: FeaturedVH, position: Int) {
         holder.apply {
             val featuredInfo = featuredList[position]
-            bundle = Bundle()
-
             Glide.with(AppConfiguration.getContext())
                 .load(featuredInfo.videoThumbnailB)
                 .placeholder(R.drawable.coming)
@@ -38,8 +42,8 @@ class FeaturedWallpapersAdapter(private val fragment: Fragment, private val feat
                 .into(img)
 
             cvImg.setOnClickListener {
-                bundle.putParcelable("allVideo",featuredInfo)
-                fragment.findNavController().navigate(R.id.action_homeFragment_to_showImageFragment,bundle)
+                bundle.putParcelable("allVideo", featuredInfo)
+                fragment.findNavController().navigate(R.id.action_homeFragment_to_showImageFragment, bundle)
                 HomeWidget.bnv.visibility = View.GONE
                 HomeWidget.toolbar.visibility = View.GONE
             }

@@ -15,10 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.omid.glitterwall.activity.HomeWidget
 import com.omid.glitterwall.databinding.FragmentShowImageByCatIdBinding
-import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.models.Category
-import com.omid.glitterwall.utils.internetLiveData.CheckNetworkConnection
-import com.omid.glitterwall.utils.networkAvailable.NetworkAvailable
 
 class ShowImageByCatIdFragment : Fragment() {
 
@@ -26,8 +23,6 @@ class ShowImageByCatIdFragment : Fragment() {
     private lateinit var owner: LifecycleOwner
     private lateinit var imgCatIdViewModel: ImgCatIdViewModel
     private lateinit var catById: Category
-    private lateinit var checkNetworkConnection: CheckNetworkConnection
-    private lateinit var dataISReady: List<AllVideo>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,7 +39,7 @@ class ShowImageByCatIdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         networkAvailable()
-        catById()
+        catByIdObserver()
         srlStatusInFragment()
         clickEvents()
         setWidget()
@@ -65,13 +60,11 @@ class ShowImageByCatIdFragment : Fragment() {
     private fun setupBindingAndViewModel() {
         binding = FragmentShowImageByCatIdBinding.inflate(layoutInflater)
         imgCatIdViewModel = ViewModelProvider(this@ShowImageByCatIdFragment)[ImgCatIdViewModel::class.java]
-        owner = this@ShowImageByCatIdFragment
-        checkNetworkConnection = CheckNetworkConnection(requireActivity().application)
     }
 
     private fun networkAvailable() {
         binding.apply {
-            if (NetworkAvailable.isNetworkAvailable(requireContext())) {
+            if (imgCatIdViewModel.checkNetworkAvailable()) {
                 pb.visibility = View.GONE
                 srl.visibility = View.VISIBLE
                 liveClNoConnection.visibility = View.GONE
@@ -83,48 +76,27 @@ class ShowImageByCatIdFragment : Fragment() {
         }
     }
 
-    private fun catById() {
+    private fun catByIdObserver() {
         binding.apply {
             pb.visibility = View.VISIBLE
             srl.visibility = View.GONE
             liveClNoConnection.visibility = View.GONE
             clNoConnection.visibility = View.GONE
-            if (!HomeWidget.isDataLoaded) {
-                checkNetworkConnection.observe(owner) { isConnect ->
-                    if (isConnect) {
-                        imgCatIdViewModel.getImgByCatId(catById.cid).observe(owner) {
-                            dataISReady = mutableListOf()
-                            dataISReady = it.catByIdList
-                            pb.visibility = View.GONE
-                            srl.visibility = View.VISIBLE
-                            liveClNoConnection.visibility = View.GONE
-                            clNoConnection.visibility = View.GONE
-                            rvCatById.adapter = CatByIdAdapter(this@ShowImageByCatIdFragment, it.catByIdList)
-                            rvCatById.layoutManager = GridLayoutManager(requireContext(), 2)
-                        }
-                    } else {
+            imgCatIdViewModel.checkNetworkConnection.observe(owner) { isConnect ->
+                if (isConnect) {
+                    imgCatIdViewModel.getImgByCatId(catById.cid).observe(owner) { catByIdList ->
                         pb.visibility = View.GONE
-                        srl.visibility = View.GONE
-                        liveClNoConnection.visibility = View.VISIBLE
+                        srl.visibility = View.VISIBLE
+                        liveClNoConnection.visibility = View.GONE
                         clNoConnection.visibility = View.GONE
+                        rvCatById.adapter = CatByIdAdapter(this@ShowImageByCatIdFragment, catByIdList.catByIdList)
+                        rvCatById.layoutManager = GridLayoutManager(requireContext(), 2)
                     }
-                }
-            } else {
-                if (NetworkAvailable.isNetworkAvailable(requireContext())) {
-                    pb.visibility = View.GONE
-                    srl.visibility = View.VISIBLE
-                    liveClNoConnection.visibility = View.GONE
-                    clNoConnection.visibility = View.GONE
-                    rvCatById.adapter = CatByIdAdapter(this@ShowImageByCatIdFragment, dataISReady)
-                    rvCatById.layoutManager = GridLayoutManager(requireContext(), 2)
                 } else {
                     pb.visibility = View.GONE
                     srl.visibility = View.GONE
-                    liveClNoConnection.visibility = View.GONE
-                    clNoConnection.visibility = View.VISIBLE
-                    btnTryAgain.setOnClickListener {
-                        catById()
-                    }
+                    liveClNoConnection.visibility = View.VISIBLE
+                    clNoConnection.visibility = View.GONE
                 }
             }
         }
@@ -145,7 +117,6 @@ class ShowImageByCatIdFragment : Fragment() {
                 findNavController().popBackStack()
                 HomeWidget.bnv.visibility = View.VISIBLE
                 HomeWidget.toolbar.visibility = View.VISIBLE
-                HomeWidget.isDataLoaded = false
             }
         }
     }
@@ -160,6 +131,6 @@ class ShowImageByCatIdFragment : Fragment() {
     }
 
     private fun srlCatById() {
-        catById()
+        catByIdObserver()
     }
 }

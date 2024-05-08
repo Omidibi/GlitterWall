@@ -125,9 +125,9 @@ class HomeFragment : Fragment() {
                         srl.visibility = View.VISIBLE
                         nsv.visibility = View.VISIBLE
                         liveNoConnection.visibility = View.GONE
-                        rvLatest.adapter = LatestWallpapersAdapter(this@HomeFragment, homeWallpaper.homeWallpaper.latestWallpaper)
+                        rvLatest.adapter = homeWallpaper.homeWallpaper.featuredWallpaper.let { LatestWallpapersAdapter(this@HomeFragment,it) }
                         rvLatest.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        rvFeatured.adapter = FeaturedWallpapersAdapter(this@HomeFragment, homeWallpaper.homeWallpaper.allWallpaper)
+                        rvFeatured.adapter = homeWallpaper.homeWallpaper.allWallpaper.let { FeaturedWallpapersAdapter(this@HomeFragment,it) }
                         rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     }
                 } else {

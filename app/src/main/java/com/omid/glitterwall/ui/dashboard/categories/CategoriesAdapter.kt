@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -14,13 +17,18 @@ import com.omid.glitterwall.models.Category
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 import javax.inject.Inject
 
-class CategoriesAdapter @Inject constructor(private val fragment: Fragment, private val categoryList: List<Category>) : RecyclerView.Adapter<CategoriesVH>() {
+class CategoriesAdapter @Inject constructor(private val fragment: Fragment, private val categoryList: List<Category>) : RecyclerView.Adapter<CategoriesAdapter.CategoriesVH>() {
 
-    private lateinit var bundle: Bundle
+    inner class CategoriesVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvCat = itemView.findViewById<CardView>(R.id.cv_cat)!!
+        val imgCat = itemView.findViewById<AppCompatImageView>(R.id.img_cat)!!
+        val txtTitle = itemView.findViewById<AppCompatTextView>(R.id.txt_title)!!
+    }
+
+    private val bundle = Bundle()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.category_row, null)
-        return CategoriesVH(view)
+        return CategoriesVH(LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.category_row, null))
     }
 
     override fun getItemCount(): Int {
@@ -31,8 +39,6 @@ class CategoriesAdapter @Inject constructor(private val fragment: Fragment, priv
         holder.apply {
             val category = categoryList[position]
             txtTitle.text = category.categoryName
-            bundle = Bundle()
-
             Glide.with(AppConfiguration.getContext())
                 .load(category.categoryImageThumb)
                 .placeholder(R.drawable.coming)

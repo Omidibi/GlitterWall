@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -13,13 +15,17 @@ import com.omid.glitterwall.R
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
-class CatByIdAdapter(private val fragment: Fragment, private val categoriesModel: List<AllVideo>) : RecyclerView.Adapter<CatByIdVH>() {
+class CatByIdAdapter(private val fragment: Fragment, private val categoriesModel: List<AllVideo>) : RecyclerView.Adapter<CatByIdAdapter.CatByIdVH>() {
 
-    private lateinit var bundle: Bundle
+    inner class CatByIdVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvCat = itemView.findViewById<CardView>(R.id.cv_cat)!!
+        val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
+    }
+
+    private val bundle = Bundle()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatByIdVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.cat_by_id_row, null)
-        return CatByIdVH(view)
+        return CatByIdVH(LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.cat_by_id_row, null))
     }
 
     override fun getItemCount(): Int {
@@ -29,8 +35,6 @@ class CatByIdAdapter(private val fragment: Fragment, private val categoriesModel
     override fun onBindViewHolder(holder: CatByIdVH, position: Int) {
         holder.apply {
             val categoriesModelInfo = categoriesModel[position]
-            bundle = Bundle()
-
             Glide.with(AppConfiguration.getContext())
                 .load(categoriesModelInfo.videoThumbnailB)
                 .placeholder(R.drawable.coming)

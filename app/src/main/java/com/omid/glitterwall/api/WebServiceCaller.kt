@@ -24,7 +24,7 @@ class WebServiceCaller {
                 .subscribe({ catByIdList ->
                     catById.postValue(catByIdList)
                 }, { error ->
-                    Log.e("",error.message.toString())
+                    Log.e("", error.message.toString())
                 })
             this.add(disposable)
         }
@@ -38,7 +38,7 @@ class WebServiceCaller {
                 .subscribe({ categories ->
                     category.postValue(categories)
                 }, { error ->
-                    Log.e("",error.message.toString())
+                    Log.e("", error.message.toString())
                 })
             this.add(disposable)
         }

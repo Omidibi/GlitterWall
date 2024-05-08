@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -13,13 +15,17 @@ import com.omid.glitterwall.R
 import com.omid.glitterwall.models.AllVideo
 import com.omid.glitterwall.utils.configuration.AppConfiguration
 
-class FavoriteWallpaperAdapter(private val fragment: Fragment, private val fvtList: MutableList<AllVideo>) : RecyclerView.Adapter<FvtWallpaperVH>() {
+class FavoriteWallpaperAdapter(private val fragment: Fragment, private val fvtList: MutableList<AllVideo>) : RecyclerView.Adapter<FavoriteWallpaperAdapter.FvtWallpaperVH>() {
 
-    private lateinit var bundle: Bundle
+    inner class FvtWallpaperVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvFvt = itemView.findViewById<CardView>(R.id.cv_fvt)!!
+        val img = itemView.findViewById<AppCompatImageView>(R.id.img)!!
+    }
+
+    private val bundle = Bundle()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FvtWallpaperVH {
-        val view = LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.fvt_row, null)
-        return FvtWallpaperVH(view)
+        return FvtWallpaperVH(LayoutInflater.from(AppConfiguration.getContext()).inflate(R.layout.fvt_row, null))
     }
 
     override fun getItemCount(): Int {
@@ -29,8 +35,6 @@ class FavoriteWallpaperAdapter(private val fragment: Fragment, private val fvtLi
     override fun onBindViewHolder(holder: FvtWallpaperVH, position: Int) {
         holder.apply {
             val fvtInfo = fvtList[position]
-            bundle = Bundle()
-
             Glide.with(AppConfiguration.getContext())
                 .load(fvtInfo.videoThumbnailB)
                 .placeholder(R.drawable.coming)
